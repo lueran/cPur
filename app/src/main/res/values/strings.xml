@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">CPur</string>
+    <string name="appName">cPur</string>
+    <string name="emailField">Email</string>
+    <string name="passwordField">Password</string>
+    <string name="loginField">Login</string>
+    <string name="register">Register</string>
+    <string name="create_a_new_story">Create a New Story</string>
+    <string name="story_title">Story Title</string>
+    <string name="num_of_participants"># Of Participants</string>
+    <string name="num_of_rounds"># Of Rounds</string>
+    <string name="create">create</string>
+    <string name="first_sentence">First Sentence</string>
+    <string name="second_sentence">Second Sentence</string>
 </resources>

@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "149010331507-imn8cgg94ehkbrs5oamp82cr3afjfhbr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cpur",
+            "certificate_hash": "7ebedacaf542b3cc13394226e3ee66a63e3928ff"
+          }
+        },
+        {
           "client_id": "149010331507-0ia28gftd6sgclmr8cidcjfhgiieblgq.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,6 +1,7 @@
 package com.cpur;
 
 import android.content.Intent;
+import android.os.Trace;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-
+    private boolean debug = Boolean.TRUE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +62,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Signup code
+                String email = emailEditText.getText().toString();
+                String pass = passwordEditText.getText().toString();
+                if (debug){
+                    email = "t@mail.com";
+                    pass = "123456";
+                }
                 final FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.createUserWithEmailAndPassword("test@mail.com", "123456")
+                auth.createUserWithEmailAndPassword(email,pass)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
