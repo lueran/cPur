@@ -31,4 +31,8 @@
     <string name="publish">Publish</string>
     <string name="heading_my_stories">My Stories</string>
     <string name="heading_my_top_stories">Top Stories</string>
+    <string name="send">Send</string>
+    <string name="write_a_comment">Write a comment...</string>
+    <string name="title">Title</string>
+    <string name="write_your_story">Write your story...</string>
 </resources>

@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 
+import com.cpur.models.Paragraph;
 import com.cpur.models.Story;
 import com.cpur.models.User;
 import com.google.firebase.database.DataSnapshot;
@@ -20,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CreateStoryActivity extends BaseActivity {
@@ -33,12 +37,18 @@ public class CreateStoryActivity extends BaseActivity {
 
     private EditText mTitleField;
     private EditText mBodyField;
+    NumberPicker numParticipants = findViewById(R.id.numParticipants);
+    NumberPicker numRounds = findViewById(R.id.numRounds);
     private FloatingActionButton mSubmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_story);
+        numParticipants.setMinValue(2);
+        numParticipants.setMinValue(20);
+        numRounds.setMinValue(5);
+        numRounds.setMinValue(100);
 
         // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -59,7 +69,8 @@ public class CreateStoryActivity extends BaseActivity {
     private void submitStory() {
         final String title = mTitleField.getText().toString();
         final String body = mBodyField.getText().toString();
-
+        final int numRoundsValue = numRounds.getValue();
+        final int numParticipantsValue = numParticipants.getValue();
         // Title is required
         if (TextUtils.isEmpty(title)) {
             mTitleField.setError(REQUIRED);
@@ -94,7 +105,7 @@ public class CreateStoryActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewStory(userId, user.getUsername(), title, body);
+                            writeNewStory(userId, user.getUsername(), title, body, numParticipantsValue, numRoundsValue);
                         }
 
                         // Finish this Activity, back to the stream
@@ -125,12 +136,15 @@ public class CreateStoryActivity extends BaseActivity {
     }
 
     // [START write_fan_out]
-    private void writeNewStory(String userId, String username, String title, String body) {
+    private void writeNewStory(String userId, String username, String title, String body, int numParticipantsValue, int numRoundsValue) {
         // Create new post at /user-stories/$userid/$storyid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("stories").push().getKey();
-        Story post = new Story(userId,username,title,null,5,5);
-        Map<String, Object> postValues = post.toMap();
+        String[] split = body.split("\n");
+        List<Paragraph> paragraphList = new ArrayList<>();
+        paragraphList.add(new Paragraph(userId, split[0], split[1]));
+        Story story = new Story(userId,username,title,paragraphList,numParticipantsValue,numRoundsValue);
+        Map<String, Object> postValues = story.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/stories/" + key, postValues);

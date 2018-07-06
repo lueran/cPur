@@ -136,10 +136,12 @@ public class Story extends BaseModel{
         result.put("uid", uid);
         result.put("author", author);
         result.put("title", title);
-        result.put("Content", content);
+        result.put("content", content);
+        result.put("participants",numParticipants);
+        result.put("rounds",numRounds);
+        result.put("currentRound",cuurentRound);
         result.put("starCount", starCount);
         result.put("stars", stars);
-
         return result;
     }
 }
