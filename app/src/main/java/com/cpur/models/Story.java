@@ -11,7 +11,7 @@ import java.util.Map;
 public class Story extends BaseModel{
 
     private String title = "My Story";
-    private String ownerId;
+    public String author;
     private List<Paragraph> content;
     private String thumbnail;
     private int numParticipants = 3;
@@ -20,22 +20,21 @@ public class Story extends BaseModel{
     private Long creationTime;
     private Long lastModified;
     private Long expirationTime;
+    public HashMap stars;
+    public String uid;
+    public int starCount;
+    public int cuurentRound;
 
     public Story() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Story(String uid, String title, String ownerId, List<Paragraph> content, String thumbnail, int maxParticipants, int minParticipants, int maxRounds, int numParticipants, int numRounds, List<User> participants, Long creationTime, Long lastModified, Long expirationTime) {
+    public Story(String uid, String author, String title, List<Paragraph> content, int numParticipants, int numRounds) {
         this.title = title;
-        this.ownerId = ownerId;
+        this.author = author;
         this.content = content;
-        this.thumbnail = thumbnail;
         this.numParticipants = numParticipants;
         this.numRounds = numRounds;
-        this.participants = participants;
-        this.creationTime = creationTime;
-        this.lastModified = lastModified;
-        this.expirationTime = expirationTime;
+        this.uid = uid;
     }
 
     public String getTitle() {
@@ -44,14 +43,6 @@ public class Story extends BaseModel{
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
     }
 
     public List<Paragraph> getContent() {
@@ -118,11 +109,12 @@ public class Story extends BaseModel{
         this.numRounds = numRounds;
     }
 
+
     @Override
     public String toString() {
         return "Story{" +
-                ", title='" + title + '\'' +
-                ", ownerId='" + ownerId + '\'' +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
                 ", content=" + content +
                 ", thumbnail='" + thumbnail + '\'' +
                 ", numParticipants=" + numParticipants +
@@ -131,6 +123,23 @@ public class Story extends BaseModel{
                 ", creationTime=" + creationTime +
                 ", lastModified=" + lastModified +
                 ", expirationTime=" + expirationTime +
+                ", stars=" + stars +
+                ", uid='" + uid + '\'' +
+                ", starCount=" + starCount +
+                ", cuurentRound=" + cuurentRound +
                 '}';
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("author", author);
+        result.put("title", title);
+        result.put("Content", content);
+        result.put("starCount", starCount);
+        result.put("stars", stars);
+
+        return result;
     }
 }

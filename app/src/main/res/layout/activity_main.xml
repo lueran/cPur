@@ -1,151 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/create_a_new_story"
-        android:textSize="26sp"
-        android:id="@+id/title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_image_edit"
+        android:layout_margin="16dp"/>
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/story_title"
-        android:inputType="text"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="43dp"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:layout_width="245dp"
-        android:id="@+id/numParticipantsLabel"
-        android:layout_height="33dp"
-        android:labelFor="@id/numParticipants"
-        android:text="@string/num_of_participants"
-        android:textSize="16sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="101dp"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <SeekBar
-        android:id="@+id/numParticipants"
-        android:layout_width="248dp"
-        android:layout_height="37dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:min="2"
-        android:max="20"
-        android:progress="5"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="115dp"
-        app:layout_constraintTop_toBottomOf="@+id/numParticipantsLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/numParticipantsValue"
-        android:layout_width="66dp"
-        android:layout_height="33dp"
-        android:textAlignment="center"
-        android:text="5"
-        android:textSize="30sp"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="115dp"
-        app:layout_constraintEnd_toEndOf="@+id/numParticipants"
-        app:layout_constraintTop_toBottomOf="@+id/numParticipantsLabel"
-        />
-
-    <TextView
-        android:id="@+id/numRoundsLabel"
-        android:layout_width="245dp"
-        android:layout_height="33dp"
-        android:labelFor="@id/numRounds"
-        android:text="@string/num_of_rounds"
-        android:textSize="16sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="160dp"
-        app:layout_constraintTop_toBottomOf="@+id/numParticipants"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <SeekBar
-        android:id="@+id/numRounds"
-        android:layout_width="248dp"
-        android:layout_height="37dp"
-        android:progress="10"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:max="20"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="174dp"
-        app:layout_constraintTop_toBottomOf="@+id/numRoundsLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/numRoundsValue"
-        android:layout_width="66dp"
-        android:layout_height="33dp"
-        android:textAlignment="center"
-        android:text="10"
-        android:textSize="30sp"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="174dp"
-        app:layout_constraintEnd_toEndOf="@+id/numRounds"
-        app:layout_constraintTop_toBottomOf="@+id/numRoundsLabel"/>
-
-    <EditText
-        android:id="@+id/sentence1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/first_sentence"
-        android:inputType="text"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="43dp"
-        app:layout_constraintTop_toBottomOf="@+id/numRoundsValue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <EditText
-        android:id="@+id/sentence2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/second_sentence"
-        android:inputType="text"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="43dp"
-        app:layout_constraintTop_toBottomOf="@+id/sentence1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <Button
-        android:id="@+id/create"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/create"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sentence2" />
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
