@@ -91,14 +91,13 @@ public class StoryDetailActivity extends BaseActivity implements View.OnClickLis
                 // Get Story object and use the values to update the UI
                 Story story = dataSnapshot.getValue(Story.class);
                 // [START_EXCLUDE]
-                mAuthorView.setText(story.author);
+                mAuthorView.setText(story.getAuthor());
                 mTitleView.setText(story.getTitle());
-                List<Paragraph> content = story.getContent();
-                if (content != null && content.size() > 0){
-                    String s2 = content.get(content.size()).getS2();
-                    mBodyView.setText("...\n" + s2 + "\n...");
+                List<Paragraph> paragraphs = story.getContent();
+                if (paragraphs != null && paragraphs.size() > 0){
+                    String data = paragraphs.get(paragraphs.size() -1).getBody();
+                    mBodyView.setText("...\n" + data + "\n...");
                 }
-                mBodyView.setText(R.string.lorem);
                 // [END_EXCLUDE]
             }
 

@@ -6,8 +6,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class User extends BaseModel{
     private String username;
     private String email;
-    private String avatar;
-
+    private String uid;
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
@@ -15,15 +14,6 @@ public class User extends BaseModel{
     public User(String username, String email) {
         this.username = username;
         this.email = email;
-        this.avatar = avatar;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getUsername() {
@@ -40,5 +30,13 @@ public class User extends BaseModel{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

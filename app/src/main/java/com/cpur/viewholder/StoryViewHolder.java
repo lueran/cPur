@@ -28,10 +28,9 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
 
     public void bindToPost(Story story, View.OnClickListener starClickListener) {
         titleView.setText(story.getTitle());
-        authorView.setText(story.author);
-        numStarsView.setText(String.valueOf(story.getNumRounds()));
-        bodyView.setText(R.string.lorem);
-
+        authorView.setText(story.getAuthor());
+        numStarsView.setText(String.valueOf(story.getClaps()));
+        bodyView.setText(story.getContent().get(0).getSuffixBody());
         starView.setOnClickListener(starClickListener);
     }
 }

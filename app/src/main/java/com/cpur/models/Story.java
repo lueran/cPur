@@ -33,7 +33,7 @@ public class Story extends BaseModel {
     public Story() {
     }
 
-    public Story(String title, String author, List<Paragraph> content, String coverImage, int maxParticipants, int numRounds, List<String> participants, String uid) {
+    public Story(String author, String title, List<Paragraph> content, String coverImage, int maxParticipants, int numRounds, List<String> participants) {
         this.title = title;
         this.author = author;
         this.content = content;

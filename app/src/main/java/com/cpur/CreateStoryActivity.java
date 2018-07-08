@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.EditText;
-import android.widget.NumberPicker;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -35,33 +35,28 @@ public class CreateStoryActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
 
-    private EditText mTitleField;
-    private EditText mBodyField;
-    NumberPicker numParticipants;
-    NumberPicker numRounds;
-    private FloatingActionButton mSubmitButton;
+    private EditText titleEditText;
+    private EditText maxPartEditText;
+    private EditText maxRoundsEditText;
+    private EditText contentEditText;
+    private ImageView coverImageView;
+    private FloatingActionButton subbmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_story);
-
-        numParticipants = findViewById(R.id.numParticipants);
-        numRounds = findViewById(R.id.numRounds);
-        mTitleField = findViewById(R.id.field_title);
-        mBodyField = findViewById(R.id.field_body);
-        mSubmitButton = findViewById(R.id.fab_submit_post);
-
-        numParticipants.setMinValue(2);
-        numParticipants.setMinValue(20);
-        numRounds.setMinValue(5);
-        numRounds.setMinValue(100);
-
+        titleEditText = findViewById(R.id.story_title);
+        contentEditText = findViewById(R.id.content);
+        maxPartEditText = findViewById(R.id.maxPart);
+        maxRoundsEditText = findViewById(R.id.maxRound);
+        coverImageView = findViewById(R.id.coverImage);
+        subbmitButton = findViewById(R.id.fab);
         // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // [END initialize_database_ref]
 
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+        subbmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitStory();
@@ -70,19 +65,28 @@ public class CreateStoryActivity extends BaseActivity {
     }
 
     private void submitStory() {
-        final String title = mTitleField.getText().toString();
-        final String body = mBodyField.getText().toString();
-        final int numRoundsValue = numRounds.getValue();
-        final int numParticipantsValue = numParticipants.getValue();
+        final String title = titleEditText.getText().toString();
+        final String content = contentEditText.getText().toString();
+        final int numRoundsValue = Integer.valueOf(maxRoundsEditText.getText().toString());
+        final int numParticipantsValue = Integer.valueOf(maxPartEditText.getText().toString());
+
         // Title is required
         if (TextUtils.isEmpty(title)) {
-            mTitleField.setError(REQUIRED);
+            titleEditText.setError(REQUIRED);
             return;
         }
 
+        if (numRoundsValue < 3){
+            maxRoundsEditText.setError("Minimum 3 Participants");
+        }
+
+        if (numRoundsValue < 5){
+            maxRoundsEditText.setError("Minimum 5 Rounds");
+        }
+
         // Body is required
-        if (TextUtils.isEmpty(body)) {
-            mBodyField.setError(REQUIRED);
+        if (TextUtils.isEmpty(content) || content.length() < 10) {
+            contentEditText.setError(REQUIRED);
             return;
         }
 
@@ -108,7 +112,7 @@ public class CreateStoryActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewStory(userId, user.getUsername(), title, body, numParticipantsValue, numRoundsValue);
+                            writeNewStory(userId,title, content, "", numParticipantsValue, numRoundsValue);
                         }
 
                         // Finish this Activity, back to the stream
@@ -129,28 +133,34 @@ public class CreateStoryActivity extends BaseActivity {
     }
 
     private void setEditingEnabled(boolean enabled) {
-        mTitleField.setEnabled(enabled);
-        mBodyField.setEnabled(enabled);
+        titleEditText.setEnabled(enabled);
+        contentEditText.setEnabled(enabled);
         if (enabled) {
-            mSubmitButton.setVisibility(View.VISIBLE);
+            subbmitButton.setVisibility(View.VISIBLE);
         } else {
-            mSubmitButton.setVisibility(View.GONE);
+            subbmitButton.setVisibility(View.GONE);
         }
     }
 
     // [START write_fan_out]
-    private void writeNewStory(String userId, String username, String title, String body, int numParticipantsValue, int numRoundsValue) {
+    private void writeNewStory(String userId,String title,String body, String coverImageSrc, int numParticipantsValue, int numRoundsValue) {
         // Create new post at /user-stories/$userid/$storyid and at
         // /posts/$postid simultaneously
+
         String key = mDatabase.child("stories").push().getKey();
+
+        List<String> participants = new ArrayList<>();
+        participants.add(userId);
+
         List<Paragraph> paragraphList = new ArrayList<>();
-        paragraphList.add(new Paragraph(userId,body));
-        Story story = new Story(userId,username,title,paragraphList,numParticipantsValue,numRoundsValue);
-        Map<String, Object> postValues = story.toMap();
+        paragraphList.add(new Paragraph(userId, body));
+
+        Story story = new Story(userId, title,paragraphList,coverImageSrc, numParticipantsValue, numRoundsValue,participants);
+
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/stories/" + key, postValues);
-        childUpdates.put("/user-stories/" + userId + "/" + key, postValues);
+        childUpdates.put("/stories/" + key, story);
+        childUpdates.put("/user-stories/" + userId + "/" + key, story);
 
         mDatabase.updateChildren(childUpdates);
     }

@@ -1,5 +1,6 @@
 package com.cpur.models;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class Paragraph {
         this.authorId = authorId;
         this.body = body;
         HashMap<String, Object> dateLastChangedObj = new HashMap<>();
-        dateCreated.put("date", ServerValue.TIMESTAMP);
+        dateLastChangedObj.put("date", ServerValue.TIMESTAMP);
         this.dateCreated = dateLastChangedObj;
 
     }
@@ -46,6 +47,7 @@ public class Paragraph {
         this.body = body;
     }
 
+    @Exclude
     public String getSuffixBody() {
         StringBuilder suffixBuilder = new StringBuilder();
 
@@ -54,10 +56,10 @@ public class Paragraph {
             int half = (int) Math.round(words.length / 2.0);
 
             for (int wordAt = half; wordAt < words.length; wordAt++) {
-                suffixBuilder.append(words[wordAt]);
+                suffixBuilder.append(" ").append(words[wordAt]);
             }
         }
 
-        return suffixBuilder.toString();
+        return suffixBuilder.toString().trim();
     }
 }

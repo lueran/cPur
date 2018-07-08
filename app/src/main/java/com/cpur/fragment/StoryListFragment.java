@@ -98,19 +98,13 @@ public abstract class StoryListFragment extends Fragment {
                 });
 
                 // Determine if the current user has liked this story and set UI accordingly
-                if (model.claps != null && model.claps.containsKey(getUid())) {
-                    viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_24);
-                } else {
-                    viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
-                }
-
                 // Bind Story to ViewHolder, setting OnClickListener for the star button
                 viewHolder.bindToPost(model, new View.OnClickListener() {
                     @Override
                     public void onClick(View starView) {
                         // Need to write to both places the story is stored
                         DatabaseReference globalPostRef = mDatabase.child("stories").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-stories").child(model.uid).child(postRef.getKey());
+                        DatabaseReference userPostRef = mDatabase.child("user-stories").child(model.getUid()).child(postRef.getKey());
 
                         // Run two transactions
                         onStarClicked(globalPostRef);
@@ -130,16 +124,6 @@ public abstract class StoryListFragment extends Fragment {
                 Story s = mutableData.getValue(Story.class);
                 if (s == null) {
                     return Transaction.success(mutableData);
-                }
-
-                if (s.claps.containsKey(getUid())) {
-                    // Unstar the story and remove self from claps
-                    s.clapsCount = s.clapsCount - 1;
-                    s.claps.remove(getUid());
-                } else {
-                    // Star the story and add self to claps
-                    s.clapsCount = s.clapsCount + 1;
-                    s.claps.put(getUid(), true);
                 }
 
                 // Set value and report transaction success
