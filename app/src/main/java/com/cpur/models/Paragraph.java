@@ -45,4 +45,19 @@ public class Paragraph {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public String getSuffixBody() {
+        StringBuilder suffixBuilder = new StringBuilder();
+
+        if (this.getBody() != null) {
+            String[] words = this.getBody().split(" ");
+            int half = (int) Math.round(words.length / 2.0);
+
+            for (int wordAt = half; wordAt < words.length; wordAt++) {
+                suffixBuilder.append(words[wordAt]);
+            }
+        }
+
+        return suffixBuilder.toString();
+    }
 }
