@@ -10,10 +10,10 @@ public class TopStoriesFragment extends StoryListFragment {
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
         // [START my_top_posts_query]
-        // My top stories by number of stars
+        // My top stories by number of claps
         String myUserId = getUid();
         Query myTopStoriesQuery = databaseReference.child("user-stories").child(myUserId)
-                .orderByChild("starCount");
+                .orderByChild("clapsCount");
         // [END my_top_posts_query]
 
         return myTopStoriesQuery;

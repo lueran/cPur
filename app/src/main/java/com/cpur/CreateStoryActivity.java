@@ -140,9 +140,8 @@ public class CreateStoryActivity extends BaseActivity {
         // Create new post at /user-stories/$userid/$storyid and at
         // /posts/$postid simultaneously
         String key = mDatabase.child("stories").push().getKey();
-        String[] split = body.split("\n");
         List<Paragraph> paragraphList = new ArrayList<>();
-        paragraphList.add(new Paragraph(userId, split[0], split[1]));
+        paragraphList.add(new Paragraph(userId,body));
         Story story = new Story(userId,username,title,paragraphList,numParticipantsValue,numRoundsValue);
         Map<String, Object> postValues = story.toMap();
 

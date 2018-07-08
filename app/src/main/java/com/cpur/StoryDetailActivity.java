@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpur.models.Comment;
+import com.cpur.models.Paragraph;
 import com.cpur.models.Story;
 import com.cpur.models.User;
 import com.google.firebase.database.ChildEventListener;
@@ -38,7 +40,7 @@ public class StoryDetailActivity extends BaseActivity implements View.OnClickLis
     private ValueEventListener mPostListener;
     private String mPostKey;
     private CommentAdapter mAdapter;
-
+    private ImageView imageView;
     private TextView mAuthorView;
     private TextView mTitleView;
     private TextView mBodyView;
@@ -64,9 +66,10 @@ public class StoryDetailActivity extends BaseActivity implements View.OnClickLis
                 .child("story-comments").child(mPostKey);
 
         // Initialize Views
-        mAuthorView = findViewById(R.id.post_author);
-        mTitleView = findViewById(R.id.post_title);
-        mBodyView = findViewById(R.id.post_body);
+        mAuthorView = findViewById(R.id.story_author);
+        imageView = findViewById(R.id.story_author_photo);
+        mTitleView = findViewById(R.id.story_title);
+        mBodyView = findViewById(R.id.story_body);
         mCommentField = findViewById(R.id.field_comment_text);
         mCommentButton = findViewById(R.id.button_post_comment);
         mCommentsRecycler = findViewById(R.id.recycler_comments);
@@ -90,6 +93,11 @@ public class StoryDetailActivity extends BaseActivity implements View.OnClickLis
                 // [START_EXCLUDE]
                 mAuthorView.setText(story.author);
                 mTitleView.setText(story.getTitle());
+                List<Paragraph> content = story.getContent();
+                if (content != null && content.size() > 0){
+                    String s2 = content.get(content.size()).getS2();
+                    mBodyView.setText("...\n" + s2 + "\n...");
+                }
                 mBodyView.setText(R.string.lorem);
                 // [END_EXCLUDE]
             }

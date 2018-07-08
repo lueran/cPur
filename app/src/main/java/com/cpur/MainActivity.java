@@ -88,6 +88,10 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            }else if(i == R.id.action_settings){
+                startActivity(new Intent(this, UserSettingActivity.class));
+                finish();
+                return true;
             } else {
                 return super.onOptionsItemSelected(item);
             }

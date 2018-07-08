@@ -1,19 +1,25 @@
 package com.cpur.models;
 
+import com.google.firebase.database.ServerValue;
+
+import java.util.HashMap;
+
 public class Paragraph {
     private String uid;
     private String authorId;
-    private String s1;
-    private String s2;
-    private Long creationTime;
+    private String body;
+    private HashMap<String, Object> dateCreated;
 
     public Paragraph() {
     }
 
-    public Paragraph(String authorId, String s1, String s2) {
+    public Paragraph(String authorId, String body) {
         this.authorId = authorId;
-        this.s1 = s1;
-        this.s2 = s2;
+        this.body = body;
+        HashMap<String, Object> dateLastChangedObj = new HashMap<>();
+        dateCreated.put("date", ServerValue.TIMESTAMP);
+        this.dateCreated = dateLastChangedObj;
+
     }
 
     public String getUid() {
@@ -32,27 +38,11 @@ public class Paragraph {
         this.authorId = authorId;
     }
 
-    public String getS1() {
-        return s1;
+    public String getBody() {
+        return body;
     }
 
-    public void setS1(String s1) {
-        this.s1 = s1;
-    }
-
-    public String getS2() {
-        return s2;
-    }
-
-    public void setS2(String s2) {
-        this.s2 = s2;
-    }
-
-    public Long getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Long creationTime) {
-        this.creationTime = creationTime;
+    public void setBody(String body) {
+        this.body = body;
     }
 }

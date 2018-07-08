@@ -10,28 +10,38 @@
     tools:context="com.cpur.StoryDetailActivity">
 
     <include
-        android:id="@+id/post_author_layout"
+        android:id="@+id/story_author_layout"
         layout="@layout/include_story_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true" />
 
     <include
-        android:id="@+id/post_text_layout"
+        android:id="@+id/story_text_layout"
         layout="@layout/include_story_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/post_author_layout"
+        android:layout_below="@+id/story_author_layout"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp" />
+
+    <Button
+        android:id="@+id/button_join_story"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/story_text_layout"
+        android:text="@string/join" />
 
     <LinearLayout
         android:id="@+id/comment_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/post_text_layout"
+        android:layout_below="@+id/button_join_story"
         android:layout_marginTop="20dp"
         android:weightSum="1.0">
 

@@ -35,4 +35,6 @@
     <string name="write_a_comment">Write a comment...</string>
     <string name="title">Title</string>
     <string name="write_your_story">Write your story...</string>
+    <string name="menu_settings">Settings</string>
+    <string name="join">Join</string>
 </resources>

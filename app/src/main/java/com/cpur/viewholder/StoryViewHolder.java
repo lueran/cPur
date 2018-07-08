@@ -19,11 +19,11 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     public StoryViewHolder(View itemView) {
         super(itemView);
 
-        titleView = itemView.findViewById(R.id.post_title);
-        authorView = itemView.findViewById(R.id.post_author);
+        titleView = itemView.findViewById(R.id.story_title);
+        authorView = itemView.findViewById(R.id.story_author);
         starView = itemView.findViewById(R.id.star);
         numStarsView = itemView.findViewById(R.id.post_num_stars);
-        bodyView = itemView.findViewById(R.id.post_body);
+        bodyView = itemView.findViewById(R.id.story_body);
     }
 
     public void bindToPost(Story story, View.OnClickListener starClickListener) {

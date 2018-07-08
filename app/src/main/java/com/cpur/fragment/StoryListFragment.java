@@ -98,7 +98,7 @@ public abstract class StoryListFragment extends Fragment {
                 });
 
                 // Determine if the current user has liked this story and set UI accordingly
-                if (model.stars != null && model.stars.containsKey(getUid())) {
+                if (model.claps != null && model.claps.containsKey(getUid())) {
                     viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_24);
                 } else {
                     viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
@@ -132,14 +132,14 @@ public abstract class StoryListFragment extends Fragment {
                     return Transaction.success(mutableData);
                 }
 
-                if (s.stars.containsKey(getUid())) {
-                    // Unstar the story and remove self from stars
-                    s.starCount = s.starCount - 1;
-                    s.stars.remove(getUid());
+                if (s.claps.containsKey(getUid())) {
+                    // Unstar the story and remove self from claps
+                    s.clapsCount = s.clapsCount - 1;
+                    s.claps.remove(getUid());
                 } else {
-                    // Star the story and add self to stars
-                    s.starCount = s.starCount + 1;
-                    s.stars.put(getUid(), true);
+                    // Star the story and add self to claps
+                    s.clapsCount = s.clapsCount + 1;
+                    s.claps.put(getUid(), true);
                 }
 
                 // Set value and report transaction success
