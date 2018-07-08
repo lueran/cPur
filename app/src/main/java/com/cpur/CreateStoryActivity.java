@@ -37,14 +37,21 @@ public class CreateStoryActivity extends BaseActivity {
 
     private EditText mTitleField;
     private EditText mBodyField;
-    NumberPicker numParticipants = findViewById(R.id.numParticipants);
-    NumberPicker numRounds = findViewById(R.id.numRounds);
+    NumberPicker numParticipants;
+    NumberPicker numRounds;
     private FloatingActionButton mSubmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_story);
+
+        numParticipants = findViewById(R.id.numParticipants);
+        numRounds = findViewById(R.id.numRounds);
+        mTitleField = findViewById(R.id.field_title);
+        mBodyField = findViewById(R.id.field_body);
+        mSubmitButton = findViewById(R.id.fab_submit_post);
+
         numParticipants.setMinValue(2);
         numParticipants.setMinValue(20);
         numRounds.setMinValue(5);
@@ -53,10 +60,6 @@ public class CreateStoryActivity extends BaseActivity {
         // [START initialize_database_ref]
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // [END initialize_database_ref]
-
-        mTitleField = findViewById(R.id.field_title);
-        mBodyField = findViewById(R.id.field_body);
-        mSubmitButton = findViewById(R.id.fab_submit_post);
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
