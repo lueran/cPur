@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cpur.R;
+import com.cpur.StoryActivity;
 import com.cpur.StoryDetailActivity;
 import com.cpur.models.Story;
 import com.cpur.viewholder.StoryViewHolder;
@@ -38,11 +39,12 @@ public abstract class StoryListFragment extends Fragment {
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
-    public StoryListFragment() {}
+    public StoryListFragment() {
+    }
 
     @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container,
-                              Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_all_stories, container, false);
 
@@ -91,8 +93,8 @@ public abstract class StoryListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         // Launch PostDetailActivity
-                        Intent intent = new Intent(getActivity(), StoryDetailActivity.class);
-                        intent.putExtra(StoryDetailActivity.EXTRA_POST_KEY, postKey);
+                        Intent intent = new Intent(getActivity(), StoryActivity.class);
+                        intent.putExtra(StoryActivity.EXTRA_STORY_ID_KEY, postKey);
                         startActivity(intent);
                     }
                 });

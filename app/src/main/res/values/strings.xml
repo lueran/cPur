@@ -40,4 +40,7 @@
     <string name="max_of_participants">Max # of Participants</string>
     <string name="start_writing_your_story">Start writing your story...</string>
     <string name="story_image">Story Image</string>
+    <string name="previous_content">...</string>
+    <string name="continue_the_story_here">Continue the story here</string>
+    <string name="buzz_format">Buzz %s</string>
 </resources>

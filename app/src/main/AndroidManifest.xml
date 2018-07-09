@@ -14,7 +14,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
-        <activity android:name=".CreateStoryActivity"></activity>
+        <activity android:name=".CreateStoryActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,14 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActivity">
-
-        </activity>
-        <activity android:name=".StoryDetailActivity">
-
-        </activity>
+        <activity android:name=".SplashActivity"></activity>
+        <activity android:name=".StoryDetailActivity"></activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".UserSettingActivity" />
+        <activity android:name=".StoryActivity"></activity>
     </application>
 
 </manifest>
