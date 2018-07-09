@@ -3,34 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="16dp"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".StoryActivity">
 
     <TextView
-        android:layout_width="wrap_content"
         android:id="@+id/previous_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="... Hello hello hello start here you story"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@android:color/black"
-        android:textSize="28sp"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="... Hello hello hello start here you story" />
 
-    <android.support.design.widget.TextInputEditText
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:id="@+id/next_content"
+        app:counterEnabled="true"
+        android:id="@+id/next_layout"
+        app:counterMaxLength="280"
         app:layout_constraintTop_toBottomOf="@+id/previous_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/continue_the_story_here"/>
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/next_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/continue_the_story_here"
+             />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/action_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/send"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/claps_button"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:src="@drawable/ic_claps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

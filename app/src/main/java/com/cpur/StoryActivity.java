@@ -2,12 +2,16 @@ package com.cpur;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
+
 
 public class StoryActivity extends AppCompatActivity {
 
@@ -32,9 +36,24 @@ public class StoryActivity extends AppCompatActivity {
     private TextView previousContentTextView;
     private EditText nextContentEditText;
     private Button actionButton;
+    private FloatingActionButton clapsButton;
     private StoryViewModel storyViewModel;
     private String uid;
     private DatabaseReference storyReference;
+    private final int[] colors = {
+            R.color.color1,
+            R.color.color2,
+            R.color.color3,
+            R.color.color4,
+            R.color.color5,
+            R.color.color6,
+            R.color.color7,
+            R.color.color8,
+            R.color.color9,
+            R.color.color10,
+            R.color.color11,
+    };
+    private View nextLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +62,9 @@ public class StoryActivity extends AppCompatActivity {
 
         previousContentTextView = findViewById(R.id.previous_content);
         nextContentEditText = findViewById(R.id.next_content);
+        nextLayout = findViewById(R.id.next_layout);
         actionButton = findViewById(R.id.action_button);
+        clapsButton = findViewById(R.id.claps_button);
         uid = FirebaseAuth.getInstance().getUid();
         storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
 
@@ -56,6 +77,8 @@ public class StoryActivity extends AppCompatActivity {
         // Initialize Database
         storyReference = FirebaseDatabase.getInstance().getReference()
                 .child("stories").child(storyId);
+
+
     }
 
     @Override
@@ -114,7 +137,7 @@ public class StoryActivity extends AppCompatActivity {
             case PENDING: {
                 if (!isParticipants) {
                     nextContentEditText.setVisibility(View.GONE);
-
+                    nextLayout.setVisibility(View.GONE);
                     actionButton.setText(R.string.join);
                     actionButton.setBackgroundColor(Color.BLUE);
                     actionButton.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +150,7 @@ public class StoryActivity extends AppCompatActivity {
                 } else {
                     actionButton.setVisibility(View.GONE);
                 }
+                clapsButton.setVisibility(View.GONE);
             }
             break;
             case IN_PROGRESS: {
@@ -172,14 +196,23 @@ public class StoryActivity extends AppCompatActivity {
                         }
                     });
                 }
+                clapsButton.setVisibility(View.GONE);
             }
             break;
             case COMPLETED: {
                 SpannableStringBuilder fullStory = new SpannableStringBuilder();
 
-                for (Paragraph p : story.getContent()) {
-                    fullStory.append(p.getBody());
+                for (int paragraphAt = 0; paragraphAt < story.getContent().size(); paragraphAt++) {
+                    Paragraph p = story.getContent().get(paragraphAt);
+                    fullStory.append(" ").append(p.getBody(), new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(),
+                            colors[paragraphAt % story.getParticipants().size()])), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
+
+                actionButton.setVisibility(View.GONE);
+                previousContentTextView.setText(fullStory);
+                nextContentEditText.setVisibility(View.GONE);
+                nextLayout.setVisibility(View.GONE);
+                clapsButton.setVisibility(View.VISIBLE);
             }
             break;
         }

@@ -8,4 +8,16 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#212121</color>
     <color name="divider">#B6B6B6</color>
+
+    <color name="color1">#b2ff59</color>
+    <color name="color2">#69f0ae</color>
+    <color name="color3">#64ffda</color>
+    <color name="color4">#18ffff</color>
+    <color name="color5">#40c4ff</color>
+    <color name="color6">#448aff</color>
+    <color name="color7">#536dfe</color>
+    <color name="color8">#7c4dff</color>
+    <color name="color9">#e040fb</color>
+    <color name="color10">#ff4081</color>
+    <color name="color11">#ff5252</color>
 </resources>
