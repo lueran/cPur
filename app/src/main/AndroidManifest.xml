@@ -28,6 +28,21 @@
         <activity android:name=".UserSettingActivity" />
         <activity android:name=".StoryActivity"
             android:windowSoftInputMode="adjustResize"></activity>
-    </application>
+
+        <service
+            android:name="com.cpur.db.CpurFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".db.CpurFirebaseInstanceIDService">
+        <intent-filter>
+            <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+        </intent-filter>
+    </service>
+
+
+
+</application>
 
 </manifest>

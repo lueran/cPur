@@ -76,8 +76,10 @@ public class CreateStoryActivity extends BaseActivity {
             return;
         }
 
-        if (numRoundsValue < 3){
-            maxRoundsEditText.setError("Minimum 3 Participants");
+        if (numParticipantsValue < 3){
+            maxPartEditText.setError("Minimum 3 Participants");
+        }else if(numParticipantsValue > 10) {
+            maxPartEditText.setError("Max 10 Participants");
         }
 
         if (numRoundsValue < 5){
