@@ -2,6 +2,7 @@ package com.cpur;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -112,6 +113,7 @@ public class StoryActivity extends AppCompatActivity {
             case PENDING: {
                 if (!isParticipants) {
                     nextContentEditText.setVisibility(View.GONE);
+
                     actionButton.setText(R.string.join);
                     actionButton.setBackgroundColor(Color.BLUE);
                     actionButton.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +136,9 @@ public class StoryActivity extends AppCompatActivity {
                     actionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: SEND STORY
+                            story.getContent().add(new Paragraph(uid, nextContentEditText.getText().toString()));
+                            story.setTurn(story.getTurn() + 1);
+                            storyReference.setValue(story);
                         }
                     });
                     nextContentEditText.addTextChangedListener(new TextWatcher() {
@@ -156,11 +160,14 @@ public class StoryActivity extends AppCompatActivity {
                 } else {
                     actionButton.setText(getString(R.string.buzz_format, "User X"));
                     actionButton.setEnabled(true);
+                    nextContentEditText.setEnabled(false);
+                    nextContentEditText.setText("Waiting for next user to response");
                     actionButton.setBackgroundColor(Color.RED);
                     actionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             //TODO: SEND BUZZ
+                            Toast.makeText(getBaseContext(), "Buzzed..", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
