@@ -180,4 +180,10 @@ public class Story extends BaseModel {
     public long getDateCreatedLong() {
         return (long) dateCreated.get("date");
     }
+
+    @Exclude
+    public String getNextTurnUID(){
+        int nextTurnIndex = this.turn % this.participants.size();
+        return this.participants.get(nextTurnIndex);
+    }
 }

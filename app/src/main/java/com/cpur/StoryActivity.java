@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cpur.models.BuzzNotification;
 import com.cpur.models.Paragraph;
 import com.cpur.models.Story;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +24,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class StoryActivity extends AppCompatActivity {
@@ -34,6 +40,7 @@ public class StoryActivity extends AppCompatActivity {
     private StoryViewModel storyViewModel;
     private String uid;
     private DatabaseReference storyReference;
+    private DatabaseReference notificationRefrence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,7 @@ public class StoryActivity extends AppCompatActivity {
         actionButton = findViewById(R.id.action_button);
         uid = FirebaseAuth.getInstance().getUid();
         storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
-
+        notificationRefrence = FirebaseDatabase.getInstance().getReference();
         // Get story key from intent
         String storyId = getIntent().getStringExtra(EXTRA_STORY_ID_KEY);
         if (storyId == null) {
@@ -166,7 +173,7 @@ public class StoryActivity extends AppCompatActivity {
                     actionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: SEND BUZZ
+                            buzzNextUser(uid, story);
                             Toast.makeText(getBaseContext(), "Buzzed..", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -182,5 +189,23 @@ public class StoryActivity extends AppCompatActivity {
             }
             break;
         }
+    }
+
+    private void buzzNextUser(String userId, Story story) {
+
+        String key = notificationRefrence.child("buzzes").push().getKey();
+        String nextTurnUID = story.getNextTurnUID();
+        Map<String, String> data = new HashMap<>();
+        data.put("fromUID", userId);
+        data.put("toUID", nextTurnUID);
+        data.put("storyTitle", story.getTitle());
+        data.put("storyUID", story.getUid());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/buzzes/" + key, data);
+        childUpdates.put("/user-buzzes/" + userId + "/" + key, data);
+
+        notificationRefrence.updateChildren(childUpdates);
+
     }
 }

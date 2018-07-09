@@ -82,6 +82,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
+                            hideProgressDialog();
+                            Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
                             Toast.makeText(LoginActivity.this, "Sign In Failed",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -117,7 +119,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.e(TAG, e.getMessage());
+                hideProgressDialog();
+                Toast.makeText(getBaseContext(), "Failed Creating User", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -163,7 +167,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email, String notificationToken) {
         User user = new User(name, email, notificationToken);
-
         mDatabase.child("users").child(userId).setValue(user);
     }
     // [END basic_write]
