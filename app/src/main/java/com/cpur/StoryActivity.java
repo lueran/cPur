@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -149,7 +150,7 @@ public class StoryActivity extends AppCompatActivity {
 
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            actionButton.setEnabled(count >= 10);
+                            actionButton.setEnabled(s.length() >= 10);
                         }
 
                         @Override
@@ -174,7 +175,11 @@ public class StoryActivity extends AppCompatActivity {
             }
             break;
             case COMPLETED: {
+                SpannableStringBuilder fullStory = new SpannableStringBuilder();
 
+                for (Paragraph p : story.getContent()) {
+                    fullStory.append(p.getBody());
+                }
             }
             break;
         }

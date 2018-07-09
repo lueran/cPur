@@ -26,7 +26,8 @@
         <activity android:name=".StoryDetailActivity"></activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".UserSettingActivity" />
-        <activity android:name=".StoryActivity"></activity>
+        <activity android:name=".StoryActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
 
 </manifest>
