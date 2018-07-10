@@ -1,31 +1,43 @@
 package com.cpur.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
+import android.support.annotation.NonNull;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @IgnoreExtraProperties
-public class Story extends BaseModel {
+@Entity
+public class Story {
 
-    public static enum Status {
+    public enum Status {
         PENDING, IN_PROGRESS, COMPLETED
     }
 
     private String title;
     private String author;
+    @Ignore
     private List<Paragraph> content;
     private String coverImage;
     private int minParticipants = 3;
     private int maxParticipants;
     private int numRounds;
+    @Ignore
     private List<String> participants;
+    @Ignore
     private HashMap<String, Object> dateCreated;
+    @Ignore
     private HashMap<String, Object> lastModified;
     private int claps;
+    @PrimaryKey
+    @NonNull
     private String uid;
     private int turn = 0;
     private Status currentStatus = Status.PENDING;
@@ -46,7 +58,6 @@ public class Story extends BaseModel {
         dateLastChangedObj.put("date", ServerValue.TIMESTAMP);
         this.dateCreated = dateLastChangedObj;
         this.lastModified = dateLastChangedObj;
-        this.uid = uid;
     }
 
     public HashMap<String, Object> getLastModified() {

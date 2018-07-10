@@ -1,12 +1,23 @@
 package com.cpur.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class User extends BaseModel{
+@Entity
+public class User {
+    @ColumnInfo(name = "username")
     private String username;
+    @ColumnInfo(name = "email")
     private String email;
+    @PrimaryKey
+    @NonNull
     private String uid;
+
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }

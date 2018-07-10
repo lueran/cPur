@@ -12,16 +12,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.cpur.db.AppDatabase;
 import com.cpur.fragment.RecentStoriesFragment;
 import com.cpur.fragment.StoryFragment;
 import com.cpur.fragment.TopStoriesFragment;
 import com.cpur.models.Story;
+import com.cpur.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";
@@ -33,7 +37,6 @@ public class MainActivity extends BaseActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-
             // Create the adapter that will return a fragment for each section
             mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
                 private final Fragment[] mFragments = new Fragment[] {
