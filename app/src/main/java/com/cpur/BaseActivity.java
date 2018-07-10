@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BaseActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
+    private ProgressDialog uploadProgressDialog;
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {

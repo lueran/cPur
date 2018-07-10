@@ -18,7 +18,7 @@ public class Story extends BaseModel {
     private String title;
     private String author;
     private List<Paragraph> content;
-    private String coverImage;
+    private String coverImage = "default";
     private int minParticipants = 3;
     private int maxParticipants;
     private int numRounds;

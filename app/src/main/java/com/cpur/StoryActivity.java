@@ -219,6 +219,13 @@ public class StoryActivity extends AppCompatActivity {
                 nextContentEditText.setVisibility(View.GONE);
                 nextLayout.setVisibility(View.GONE);
                 clapsButton.setVisibility(View.VISIBLE);
+                clapsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        story.setClaps(story.getClaps() + 1);
+                        storyReference.setValue(story);
+                    }
+                });
             }
             break;
         }
