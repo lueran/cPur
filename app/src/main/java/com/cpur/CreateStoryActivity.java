@@ -46,6 +46,7 @@ import java.util.UUID;
 public class CreateStoryActivity extends BaseActivity {
     private static final String TAG = "CreateStoryActivity";
     private static final String REQUIRED = "Required";
+    private static final String DEFAULT_IMAG_URI = "https://firebasestorage.googleapis.com/v0/b/cpur-1ad2a.appspot.com/o/images%2Fpizza_monster.png?alt=media&token=ef5d90e7-639c-46ae-a7e3-89df0fa6b52b";
     private static int GET_FROM_GALLERY = 3;
     // [START declare_database_ref]
     private DatabaseReference databaseReference;
@@ -180,11 +181,12 @@ public class CreateStoryActivity extends BaseActivity {
         uploadProgressDialog.show();
         if (coverImagUri != null) {
             imageId = UUID.randomUUID().toString();
-            StorageReference filepath = storageReference.child("images/" + imageId);
+            final StorageReference filepath = storageReference.child("images/" + imageId);
             filepath.putFile(coverImagUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     uploadProgressDialog.dismiss();
+                    imageId = filepath.getDownloadUrl().toString();
                     Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
                 }
             })
@@ -192,6 +194,7 @@ public class CreateStoryActivity extends BaseActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             uploadProgressDialog.dismiss();
+                            imageId = DEFAULT_IMAG_URI;
                             Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
                         }
                     })

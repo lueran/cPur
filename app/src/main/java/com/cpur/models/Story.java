@@ -12,13 +12,32 @@ import java.util.Map;
 public class Story extends BaseModel {
 
     public static enum Status {
-        PENDING, IN_PROGRESS, COMPLETED
+
+        PENDING("PENDING"),
+        STARTED("STARTED"),
+        IN_PROGRESS("IN_PROGRESS"),
+        FULL("FULL"),
+        COMPLETED("COMPLETED");
+
+        private final String text;
+
+        Status(final String text) {
+            this.text = text;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+            return text;
+        }
     }
 
     private String title;
     private String author;
     private List<Paragraph> content;
-    private String coverImage = "default";
+    private String coverImage;
     private int minParticipants = 3;
     private int maxParticipants;
     private int numRounds;
@@ -186,4 +205,24 @@ public class Story extends BaseModel {
         int nextTurnIndex = this.turn % this.participants.size();
         return this.participants.get(nextTurnIndex);
     }
+
+//    @Exclude
+//    public String getCurrentStatusMessage(){
+//        String message = "No Status";
+//        switch (currentStatus){
+//            case PENDING:
+//                message = "Waiting for more players";
+//                break;
+//            case STARTED:
+//                message = "Join The Creativity";
+//                break;
+//            case IN_PROGRESS:
+//                message = "This will soon be completed";
+//                break;
+//            case COMPLETED:
+//                message = "A great read";
+//                break;
+//        }
+//        return message;
+//    }
 }
