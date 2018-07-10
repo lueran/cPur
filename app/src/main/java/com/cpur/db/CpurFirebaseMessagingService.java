@@ -70,8 +70,10 @@ public class CpurFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             String body = remoteMessage.getNotification().getBody();
+            String title = remoteMessage.getNotification().getTitle();
+
             Log.d(TAG, "Message Notification Body: " + body);
-            sendNotification(body);
+            sendNotification(body, title);
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -98,7 +100,7 @@ public class CpurFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void handleNow() {
         Log.d(TAG, "Short lived task is done.");
-        sendNotification("test");
+        sendNotification("Test Body",   "Test Title");
     }
 
     /**
@@ -106,7 +108,7 @@ public class CpurFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, String title) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -117,7 +119,7 @@ public class CpurFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_action_account_circle_40)
-                        .setContentTitle("FCM Message")
+                        .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
