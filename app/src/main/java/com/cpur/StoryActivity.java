@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-
 public class StoryActivity extends AppCompatActivity {
 
     public static final String EXTRA_STORY_ID_KEY = "com.cpur.EXTRA_STORY_ID_KEY";
@@ -139,6 +138,7 @@ public class StoryActivity extends AppCompatActivity {
                     nextContentEditText.setVisibility(View.GONE);
                     nextLayout.setVisibility(View.GONE);
                     actionButton.setText(R.string.join);
+                    actionButton.setVisibility(View.VISIBLE);
                     actionButton.setBackgroundColor(Color.BLUE);
                     actionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -149,6 +149,12 @@ public class StoryActivity extends AppCompatActivity {
                     });
                 } else {
                     actionButton.setVisibility(View.GONE);
+                    nextContentEditText.setVisibility(View.VISIBLE);
+                    nextLayout.setVisibility(View.VISIBLE);
+                    int quantity = story.getMinParticipants() - story.getParticipants().size();
+                    nextContentEditText.setText(getResources().getQuantityString(R.plurals.minimum_par_to_start,
+                            quantity, quantity));
+                    nextContentEditText.setEnabled(false);
                 }
                 clapsButton.setVisibility(View.GONE);
             }
@@ -156,6 +162,7 @@ public class StoryActivity extends AppCompatActivity {
             case IN_PROGRESS: {
                 if (isMyTurn) {
                     actionButton.setText(R.string.send);
+                    actionButton.setVisibility(View.VISIBLE);
                     actionButton.setEnabled(false);
                     actionButton.setBackgroundColor(Color.YELLOW);
                     actionButton.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +220,13 @@ public class StoryActivity extends AppCompatActivity {
                 nextContentEditText.setVisibility(View.GONE);
                 nextLayout.setVisibility(View.GONE);
                 clapsButton.setVisibility(View.VISIBLE);
+                clapsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        story.setClaps(story.getClaps() + 1);
+                        storyReference.setValue(story);
+                    }
+                });
             }
             break;
         }
