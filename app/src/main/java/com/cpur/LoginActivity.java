@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -83,6 +84,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
                         } else {
+                            hideProgressDialog();
+                            Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
                             Toast.makeText(LoginActivity.this, "Sign In Failed",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -115,19 +118,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         }
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, e.getMessage());
+                hideProgressDialog();
+                Toast.makeText(getBaseContext(), "Failed Creating User", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
-
+        String token = FirebaseInstanceId.getInstance().getToken();
         // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail());
+        writeNewUser(user.getUid(), username, user.getEmail(), token);
 
         // Go to CreateStoryActivity
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -162,9 +167,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     // [START basic_write]
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
-
+    private void writeNewUser(String userId, String name, String email, String notificationToken) {
+        User user = new User(name, email, notificationToken);
         mDatabase.child("users").child(userId).setValue(user);
         user.setUid(userId);
         new AsyncTask<User, Void, Void>() {

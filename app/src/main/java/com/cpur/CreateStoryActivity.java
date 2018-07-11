@@ -1,6 +1,12 @@
 package com.cpur;
 
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,24 +21,35 @@ import android.widget.Toast;
 import com.cpur.models.Paragraph;
 import com.cpur.models.Story;
 import com.cpur.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CreateStoryActivity extends BaseActivity {
     private static final String TAG = "CreateStoryActivity";
     private static final String REQUIRED = "Required";
-
+    private static final String DEFAULT_IMAG_URI = "https://firebasestorage.googleapis.com/v0/b/cpur-1ad2a.appspot.com/o/images%2Fpizza_monster.png?alt=media&token=ef5d90e7-639c-46ae-a7e3-89df0fa6b52b";
+    private static int GET_FROM_GALLERY = 3;
     // [START declare_database_ref]
-    private DatabaseReference mDatabase;
+    private DatabaseReference databaseReference;
     // [END declare_database_ref]
 
     private EditText titleEditText;
@@ -40,23 +57,42 @@ public class CreateStoryActivity extends BaseActivity {
     private EditText maxRoundsEditText;
     private EditText contentEditText;
     private ImageView coverImageView;
-    private FloatingActionButton subbmitButton;
+    private FloatingActionButton submitButton;
+    private StorageReference storageReference;
+    private Uri coverImagUri;
+    private String imageId;
+
+    private ProgressDialog uploadProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_story);
+
         titleEditText = findViewById(R.id.story_title);
         contentEditText = findViewById(R.id.content);
         maxPartEditText = findViewById(R.id.maxPart);
         maxRoundsEditText = findViewById(R.id.maxRound);
         coverImageView = findViewById(R.id.coverImage);
-        subbmitButton = findViewById(R.id.fab);
+        submitButton = findViewById(R.id.fab);
+
         // [START initialize_database_ref]
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         // [END initialize_database_ref]
 
-        subbmitButton.setOnClickListener(new View.OnClickListener() {
+        uploadProgressDialog = new ProgressDialog(this);
+        uploadProgressDialog.setTitle("Uploading...");
+
+
+        coverImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitStory();
@@ -64,11 +100,17 @@ public class CreateStoryActivity extends BaseActivity {
         });
     }
 
+    private void chooseImage() {
+        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+    }
+
     private void submitStory() {
         final String title = titleEditText.getText().toString();
         final String content = contentEditText.getText().toString();
         final int numRoundsValue = Integer.valueOf(maxRoundsEditText.getText().toString());
         final int numParticipantsValue = Integer.valueOf(maxPartEditText.getText().toString());
+        uploadImage();
+
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
@@ -76,11 +118,13 @@ public class CreateStoryActivity extends BaseActivity {
             return;
         }
 
-        if (numRoundsValue < 3){
-            maxRoundsEditText.setError("Minimum 3 Participants");
+        if (numParticipantsValue < 3) {
+            maxPartEditText.setError("Minimum 3 Participants");
+        } else if (numParticipantsValue > 10) {
+            maxPartEditText.setError("Max 10 Participants");
         }
 
-        if (numRoundsValue < 5){
+        if (numRoundsValue < 5) {
             maxRoundsEditText.setError("Minimum 5 Rounds");
         }
 
@@ -96,7 +140,7 @@ public class CreateStoryActivity extends BaseActivity {
 
         // [START single_value_read]
         final String userId = getUid();
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+        databaseReference.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -112,7 +156,7 @@ public class CreateStoryActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewStory(userId,title, content, "", numParticipantsValue, numRoundsValue);
+                            writeNewStory(userId, title, content, numParticipantsValue, numRoundsValue);
                         }
 
                         // Finish this Activity, back to the stream
@@ -132,22 +176,71 @@ public class CreateStoryActivity extends BaseActivity {
         // [END single_value_read]
     }
 
+    private void uploadImage() {
+
+        uploadProgressDialog.show();
+        if (coverImagUri != null) {
+            imageId = UUID.randomUUID().toString();
+            final StorageReference filepath = storageReference.child("images/" + imageId);
+            filepath.putFile(coverImagUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    uploadProgressDialog.dismiss();
+                    imageId = filepath.getDownloadUrl().toString();
+                    Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            uploadProgressDialog.dismiss();
+                            imageId = DEFAULT_IMAG_URI;
+                            Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
+                        }
+                    })
+            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    uploadProgressDialog.setMessage("Uploaded " + progress + "%" );
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GET_FROM_GALLERY && resultCode == RESULT_OK && data != null
+                && data.getData() != null) {
+            coverImagUri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), coverImagUri);
+                coverImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void setEditingEnabled(boolean enabled) {
         titleEditText.setEnabled(enabled);
         contentEditText.setEnabled(enabled);
         if (enabled) {
-            subbmitButton.setVisibility(View.VISIBLE);
+            submitButton.setVisibility(View.VISIBLE);
         } else {
-            subbmitButton.setVisibility(View.GONE);
+            submitButton.setVisibility(View.GONE);
         }
     }
 
     // [START write_fan_out]
-    private void writeNewStory(String userId,String title,String body, String coverImageSrc, int numParticipantsValue, int numRoundsValue) {
+    private void writeNewStory(String userId, String title, String body, int numParticipantsValue, int numRoundsValue) {
         // Create new post at /user-stories/$userid/$storyid and at
         // /posts/$postid simultaneously
 
-        String key = mDatabase.child("stories").push().getKey();
+        String key = databaseReference.child("stories").push().getKey();
 
         List<String> participants = new ArrayList<>();
         participants.add(userId);
@@ -155,14 +248,14 @@ public class CreateStoryActivity extends BaseActivity {
         List<Paragraph> paragraphList = new ArrayList<>();
         paragraphList.add(new Paragraph(userId, body));
 
-        Story story = new Story(userId, title,paragraphList,coverImageSrc, numParticipantsValue, numRoundsValue,participants);
+        Story story = new Story(userId, title, paragraphList, imageId, numParticipantsValue, numRoundsValue, participants);
 
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/stories/" + key, story);
         childUpdates.put("/user-stories/" + userId + "/" + key, story);
 
-        mDatabase.updateChildren(childUpdates);
+        databaseReference.updateChildren(childUpdates);
     }
     // [END write_fan_out]
 }
