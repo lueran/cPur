@@ -69,7 +69,6 @@ public class StoryDetailActivity extends BaseActivity implements View.OnClickLis
         mAuthorView = findViewById(R.id.story_author);
         imageView = findViewById(R.id.story_author_photo);
         mTitleView = findViewById(R.id.story_title);
-        mBodyView = findViewById(R.id.story_body);
         mCommentField = findViewById(R.id.field_comment_text);
         mCommentButton = findViewById(R.id.button_post_comment);
         mCommentsRecycler = findViewById(R.id.recycler_comments);
