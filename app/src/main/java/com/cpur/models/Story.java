@@ -11,12 +11,10 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Story extends BaseModel {
 
-    public static enum Status {
+    public enum Status {
 
-        PENDING("PENDING"),
-        STARTED("STARTED"),
-        IN_PROGRESS("IN_PROGRESS"),
-        FULL("FULL"),
+        PENDING("PENDING"), // before enough participants
+        IN_PROGRESS("IN_PROGRESS"), // started play
         COMPLETED("COMPLETED");
 
         private final String text;
@@ -25,9 +23,6 @@ public class Story extends BaseModel {
             this.text = text;
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Enum#toString()
-         */
         @Override
         public String toString() {
             return text;
@@ -42,11 +37,9 @@ public class Story extends BaseModel {
     private int maxParticipants;
     private int numRounds;
     private List<String> participants;
-    private HashMap<String, Object> dateCreated;
-    private HashMap<String, Object> lastModified;
     private int claps;
     private String uid;
-    private int turn = 0;
+    private int turn = 1;
     private Status currentStatus = Status.PENDING;
 
     public Story() {
@@ -60,35 +53,6 @@ public class Story extends BaseModel {
         this.maxParticipants = maxParticipants;
         this.numRounds = numRounds;
         this.participants = participants;
-        //Date last changed will always be set to ServerValue.TIMESTAMP
-        HashMap<String, Object> dateLastChangedObj = new HashMap<>();
-        dateLastChangedObj.put("date", ServerValue.TIMESTAMP);
-        this.dateCreated = dateLastChangedObj;
-        this.lastModified = dateLastChangedObj;
-        this.uid = uid;
-    }
-
-    public HashMap<String, Object> getLastModified() {
-        return lastModified;
-    }
-
-    public HashMap<String, Object> getDateCreated() {
-        //If there is a dateCreated object already, then return that
-        if (dateCreated != null) {
-            return dateCreated;
-        }
-        //Otherwise make a new object set to ServerValue.TIMESTAMP
-        HashMap<String, Object> dateCreatedObj = new HashMap<String, Object>();
-        dateCreatedObj.put("date", ServerValue.TIMESTAMP);
-        return dateCreatedObj;
-    }
-
-    // Use the method described in https://stackoverflow.com/questions/25500138/android-chat-crashes-on-datasnapshot-getvalue-for-timestamp/25512747#25512747
-    // to get the long values from the date object.
-    @Exclude
-    public long getDateLastChangedLong() {
-
-        return (long) lastModified.get("date");
     }
 
     public String getTitle() {
@@ -155,14 +119,6 @@ public class Story extends BaseModel {
         this.participants = participants;
     }
 
-    public void setDateCreated(HashMap<String, Object> dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public void setLastModified(HashMap<String, Object> lastModified) {
-        this.lastModified = lastModified;
-    }
-
     public int getClaps() {
         return claps;
     }
@@ -196,33 +152,8 @@ public class Story extends BaseModel {
     }
 
     @Exclude
-    public long getDateCreatedLong() {
-        return (long) dateCreated.get("date");
-    }
-
-    @Exclude
     public String getNextTurnUID(){
         int nextTurnIndex = this.turn % this.participants.size();
         return this.participants.get(nextTurnIndex);
     }
-
-//    @Exclude
-//    public String getCurrentStatusMessage(){
-//        String message = "No Status";
-//        switch (currentStatus){
-//            case PENDING:
-//                message = "Waiting for more players";
-//                break;
-//            case STARTED:
-//                message = "Join The Creativity";
-//                break;
-//            case IN_PROGRESS:
-//                message = "This will soon be completed";
-//                break;
-//            case COMPLETED:
-//                message = "A great read";
-//                break;
-//        }
-//        return message;
-//    }
 }
