@@ -6,8 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,13 +13,8 @@ import android.view.View;
 import com.cpur.fragment.RecentStoriesFragment;
 import com.cpur.fragment.StoryFragment;
 import com.cpur.fragment.TopStoriesFragment;
-import com.cpur.models.Story;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";
@@ -33,6 +26,7 @@ public class MainActivity extends BaseActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+
 
             // Create the adapter that will return a fragment for each section
             mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {

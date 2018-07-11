@@ -13,5 +13,9 @@
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
+    <style name="BackGroundImageView">
+        <item name="android:alpha">0.5</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:src">@drawable/pizza_monster</item>
+    </style>
 </resources>

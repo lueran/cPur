@@ -28,6 +28,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StoryActivity extends AppCompatActivity {
 
@@ -39,6 +43,7 @@ public class StoryActivity extends AppCompatActivity {
     private StoryViewModel storyViewModel;
     private String uid;
     private DatabaseReference storyReference;
+    private DatabaseReference notificationRefrence;
     private final int[] colors = {
             R.color.color1,
             R.color.color2,
@@ -54,6 +59,7 @@ public class StoryActivity extends AppCompatActivity {
     };
     private View nextLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +72,7 @@ public class StoryActivity extends AppCompatActivity {
         clapsButton = findViewById(R.id.claps_button);
         uid = FirebaseAuth.getInstance().getUid();
         storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
-
+        notificationRefrence = FirebaseDatabase.getInstance().getReference();
         // Get story key from intent
         String storyId = getIntent().getStringExtra(EXTRA_STORY_ID_KEY);
         if (storyId == null) {
@@ -198,7 +204,7 @@ public class StoryActivity extends AppCompatActivity {
                     actionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //TODO: SEND BUZZ
+                            buzzNextUser(uid, story);
                             Toast.makeText(getBaseContext(), "Buzzed..", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -230,5 +236,23 @@ public class StoryActivity extends AppCompatActivity {
             }
             break;
         }
+    }
+
+    private void buzzNextUser(String userId, Story story) {
+
+        String key = notificationRefrence.child("buzzes").push().getKey();
+        String nextTurnUID = story.getNextTurnUID();
+        Map<String, String> data = new HashMap<>();
+        data.put("fromUID", userId);
+        data.put("toUID", nextTurnUID);
+        data.put("storyTitle", story.getTitle());
+        data.put("storyUID", story.getUid());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/buzzes/" + key, data);
+        childUpdates.put("/user-buzzes/" + userId + "/" + key, data);
+
+        notificationRefrence.updateChildren(childUpdates);
+
     }
 }
