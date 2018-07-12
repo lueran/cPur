@@ -1,22 +1,13 @@
 package com.cpur.viewholder;
 
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.cpur.R;
-import com.cpur.models.Story;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.cpur.data.Story;
 
 public class StoryViewHolder extends RecyclerView.ViewHolder {
 

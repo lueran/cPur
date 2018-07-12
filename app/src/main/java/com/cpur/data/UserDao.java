@@ -1,4 +1,4 @@
-package com.cpur.models;
+package com.cpur.data;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

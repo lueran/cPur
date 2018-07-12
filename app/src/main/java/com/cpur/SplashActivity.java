@@ -4,11 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.cpur.db.AppDatabase;
-import com.cpur.models.User;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
 

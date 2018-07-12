@@ -1,6 +1,6 @@
 package com.cpur.db;
 
-import com.cpur.models.Story;
+import com.cpur.data.Story;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 

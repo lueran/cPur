@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 
 import com.cpur.R;
 import com.cpur.StoryActivity;
-import com.cpur.models.Story;
-import com.cpur.viewholder.GlideApp;
+import com.cpur.data.Story;
 import com.cpur.viewholder.StoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;

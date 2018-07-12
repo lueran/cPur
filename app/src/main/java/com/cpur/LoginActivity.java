@@ -1,7 +1,6 @@
 package com.cpur;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,8 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cpur.db.AppDatabase;
-import com.cpur.models.User;
+import com.cpur.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -171,14 +169,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         User user = new User(name, email, notificationToken);
         mDatabase.child("users").child(userId).setValue(user);
         user.setUid(userId);
-        new AsyncTask<User, Void, Void>() {
 
-            @Override
-            protected Void doInBackground(User... users) {
-                AppDatabase.getInstance(getBaseContext()).userDao().insertAll(users);
-                return null;
-            }
-        }.execute(user);
 
     }
     // [END basic_write]

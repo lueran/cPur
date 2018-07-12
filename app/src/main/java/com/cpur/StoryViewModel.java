@@ -3,7 +3,7 @@ package com.cpur;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.cpur.models.Story;
+import com.cpur.data.Story;
 
 public class StoryViewModel extends ViewModel {
 

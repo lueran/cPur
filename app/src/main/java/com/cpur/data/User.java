@@ -1,7 +1,8 @@
-package com.cpur.models;
+package com.cpur.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -19,6 +20,7 @@ public class User {
     @PrimaryKey
     @NonNull
     private String uid;
+    @Ignore
     private HashMap<String,Boolean> notificationToken;
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)

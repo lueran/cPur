@@ -1,16 +1,13 @@
-package com.cpur.models;
+package com.cpur.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Relation;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ServerValue;
 
-import java.util.HashMap;
 import java.util.List;
 
 @IgnoreExtraProperties
@@ -43,12 +40,7 @@ public class Story {
     private int minParticipants = 3;
     private int maxParticipants;
     private int numRounds;
-    @Ignore
     private List<String> participants;
-    @Ignore
-    private HashMap<String, Object> dateCreated;
-    @Ignore
-    private HashMap<String, Object> lastModified;
     private int claps;
     @PrimaryKey
     @NonNull
@@ -166,7 +158,7 @@ public class Story {
     }
 
     @Exclude
-    public String getNextTurnUID(){
+    public String getNextTurnUID() {
         int nextTurnIndex = this.turn % this.participants.size();
         return this.participants.get(nextTurnIndex);
     }

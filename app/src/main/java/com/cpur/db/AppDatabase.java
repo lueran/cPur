@@ -3,14 +3,13 @@ package com.cpur.db;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-import com.cpur.models.Paragraph;
-import com.cpur.models.Story;
-import com.cpur.models.User;
-import com.cpur.models.UserDao;
+import com.cpur.data.Paragraph;
+import com.cpur.data.Story;
+import com.cpur.data.User;
+import com.cpur.data.UserDao;
 
 @Database(entities = {User.class, Story.class, Paragraph.class}, version = 1)
 @TypeConverters({Converters.class})

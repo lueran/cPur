@@ -10,16 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.cpur.db.AppDatabase;
 import com.cpur.fragment.RecentStoriesFragment;
 import com.cpur.fragment.StoryFragment;
 import com.cpur.fragment.TopStoriesFragment;
-import com.cpur.models.Story;
-import com.cpur.models.User;
 import com.google.firebase.auth.FirebaseAuth;
-
-
-import java.util.List;
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";

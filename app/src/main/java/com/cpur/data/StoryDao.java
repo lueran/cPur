@@ -1,4 +1,4 @@
-package com.cpur.models;
+package com.cpur.data;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -12,8 +12,8 @@ public interface StoryDao {
     @Query("SELECT * FROM story")
     List<Story> getAll();
 
-    @Query("SELECT * FROM story WHERE uid IN (:storyIds)")
-    List<User> loadAllByIds(int[] storyIds);
+    @Query("SELECT * FROM story WHERE uid = (:storyId)")
+    Story loadStoryById(String storyId);
 
     /*@Query("SELECT * FROM user WHERE username LIKE :username")
     User findByName(String username);*/

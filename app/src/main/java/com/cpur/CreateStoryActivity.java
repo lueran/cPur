@@ -18,12 +18,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
-import com.cpur.models.Paragraph;
-import com.cpur.models.Story;
-import com.cpur.models.User;
+import com.cpur.data.Paragraph;
+import com.cpur.data.Story;
+import com.cpur.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
