@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StoryViewModel extends ViewModel {
 
     private static final String TAG = "StoryViewModel";
@@ -43,6 +46,7 @@ public class StoryViewModel extends ViewModel {
     }
     // Initialize Database
     private DatabaseReference storyReference;
+    private DatabaseReference databaseReference;
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     protected void onStop() {
@@ -58,33 +62,45 @@ public class StoryViewModel extends ViewModel {
         uid = FirebaseAuth.getInstance().getUid();
         storyReference = FirebaseDatabase.getInstance().getReference()
                 .child("stories").child(storyId);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void sendContent(String content) {
+    public void sendContent(String content, String storyId) {
         Story story = storyLiveData.getValue();
         if(story != null) {
             story.getContent().add(new Paragraph(uid, content));
             story.setTurn(story.getTurn() + 1);
-            storyReference.setValue(story);
+            saveStory(story, storyId);
         }
     }
 
-    public void clap() {
+    public void clap(String storyId) {
         Story story = storyLiveData.getValue();
         if(story != null) {
             story.setClaps(story.getClaps() + 1);
-            storyReference.setValue(story);
+            saveStory(story,storyId);
         }
     }
 
-    public void joinStory() {
+    public void joinStory(String storyId) {
         Story story = storyLiveData.getValue();
         if(story != null) {
             story.getParticipants().add(uid);
-            storyReference.setValue(story);
+            saveStory(story,storyId);
         }
     }
 
+    private void saveStory(Story story, String storyId){
+        if(story != null) {
+            story.setUid(storyId);
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/stories/" + storyId, story);
+            if (story.getParticipants().contains(uid)) {
+                childUpdates.put("/user-stories/" + uid + "/" + storyId, story);
+            }
+            databaseReference.updateChildren(childUpdates);
+        }
+    }
     public boolean isMyTurn() {
         Story story = storyLiveData.getValue();
         return story != null && story.getParticipants().get(story.getTurn() % story.getParticipants().size()).equals(uid);

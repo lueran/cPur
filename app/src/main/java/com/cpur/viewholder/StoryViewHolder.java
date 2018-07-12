@@ -1,5 +1,6 @@
 package com.cpur.viewholder;
 
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -13,14 +14,15 @@ import com.cpur.models.Story;
 public class StoryViewHolder extends RecyclerView.ViewHolder {
 
     private static final String DEFAULT_IMG_URI = "https://firebasestorage.googleapis.com/v0/b/cpur-1ad2a.appspot.com/o/images%2Fpizza_monster.png?alt=media&token=ef5d90e7-639c-46ae-a7e3-89df0fa6b52b";
-    private final Drawable joinDraw;
     private TextView titleView;
     private ImageView statusImage;
     private TextView numClapsView;
     private GlideRequests with;
     private ImageView coverImageView;
-    private Drawable readDraw;
+    private Resources resources;
     private Drawable fallback;
+    private TextView numOfPartOutOf;
+
 
 
 
@@ -30,9 +32,9 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         numClapsView = itemView.findViewById(R.id.post_num_claps);
         coverImageView = itemView.findViewById(R.id.textViewBackground);
         statusImage = itemView.findViewById(R.id.statusImage);
+        numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
         with = GlideApp.with(itemView);
-        readDraw = itemView.getResources().getDrawable(R.drawable.ic_glasses);
-        joinDraw = itemView.getResources().getDrawable(R.drawable.join);
+        resources = itemView.getResources();
         fallback = itemView.getResources().getDrawable(R.drawable.pizza_monster);
 
     }
@@ -48,17 +50,22 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         }
         titleView.setText(story.getTitle());
         numClapsView.setText(String.valueOf(story.getClaps()));
+        int maxParticipants = story.getMaxParticipants();
+        String maxParticipantsString = String.valueOf(maxParticipants);
+        int size = story.getParticipants().size();
+        String sizeString = String.valueOf(size);
         switch (story.getCurrentStatus()){
 
             case PENDING:
             case IN_PROGRESS:
-                statusImage.setImageDrawable(joinDraw);
+                statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_join));
+                numOfPartOutOf.setText(String.format("%s/%s", size, maxParticipants));
                 break;
             case COMPLETED:
-                statusImage.setImageDrawable(readDraw);
+                statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_glasses));
                 break;
             default:
-               statusImage.setImageDrawable(joinDraw);
+               statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_join));
         }
     }
 

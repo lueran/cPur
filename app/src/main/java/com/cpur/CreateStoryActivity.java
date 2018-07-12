@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -97,27 +98,28 @@ public class CreateStoryActivity extends BaseActivity {
         final String content = contentEditText.getText().toString();
         String maxRoundsString = maxRoundsEditText.getText().toString();
         String maxPartString = maxPartEditText.getText().toString();
-        int numRoundsValue = 0;
-        int numParticipantsValue = 0;
+        int numRoundsValue;
+        int numParticipantsValue;
 
 
-        // Validation
-        if (!TextUtils.isEmpty(maxRoundsString)){
-            titleEditText.setError(REQUIRED);
-            return;
-        }
-
-        if (TextUtils.isEmpty(maxPartString)){
-            titleEditText.setError(REQUIRED);
-            return;
-        }
-        numRoundsValue = Integer.valueOf(maxRoundsString);
-        numParticipantsValue = Integer.valueOf(maxPartString);
         // Title is required
         if (TextUtils.isEmpty(title)) {
             titleEditText.setError(REQUIRED);
             return;
         }
+        // Validation
+        if (TextUtils.isEmpty(maxRoundsString)) {
+            maxRoundsEditText.setError(REQUIRED);
+            return;
+        }
+
+        if (TextUtils.isEmpty(maxPartString)) {
+            maxPartEditText.setError(REQUIRED);
+            return;
+        }
+
+        numRoundsValue = Integer.valueOf(maxRoundsString);
+        numParticipantsValue = Integer.valueOf(maxPartString);
 
         if (numParticipantsValue < 3) {
             maxPartEditText.setError("Minimum 3 Participants");
@@ -138,7 +140,6 @@ public class CreateStoryActivity extends BaseActivity {
             contentEditText.setError(REQUIRED);
             return;
         }
-        uploadImage();
 
 
         // Disable button so there are no multi-posts
@@ -147,41 +148,45 @@ public class CreateStoryActivity extends BaseActivity {
 
         // [START single_value_read]
 
-        createStoryViewModel.writeNewStory(title,imageId, content, numParticipantsValue, numRoundsValue);
+        createStoryViewModel.writeNewStory(title, imageId, content, numParticipantsValue, numRoundsValue);
         setEditingEnabled(true);
         finish();
     }
 
     private void uploadImage() {
+        uploadProgressDialog.show();
         if (coverImageUri != null) {
-            uploadProgressDialog.show();
             String imageUUID = UUID.randomUUID().toString();
             final StorageReference filepath = storageReference.child("images/" + imageUUID);
-            filepath.putFile(coverImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    imageId = filepath.getDownloadUrl().toString();
-                    uploadProgressDialog.dismiss();
-                    Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
+            filepath.putFile(coverImageUri).addOnProgressListener(
+                    new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            imageId = DEFAULT_IMG_URI;
-                            Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            uploadProgressDialog.setMessage("Uploaded " + progress + "%");
                         }
-                    })
-            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    uploadProgressDialog.setMessage("Uploaded " + progress + "%" );
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            imageId = uri.toString();
+                            uploadProgressDialog.dismiss();
+                            Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
+                            //Do what you want with the url
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    imageId = DEFAULT_IMG_URI;
+                    uploadProgressDialog.dismiss();
+                    Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
                 }
             });
-            uploadProgressDialog.dismiss();
         }
-
     }
 
     @Override
@@ -195,6 +200,9 @@ public class CreateStoryActivity extends BaseActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), coverImageUri);
                 coverImageView.setImageBitmap(bitmap);
+                setEditingEnabled(false);
+                uploadImage();
+                setEditingEnabled(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }

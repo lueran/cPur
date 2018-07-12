@@ -38,6 +38,7 @@ public class StoryActivity extends AppCompatActivity {
     private FloatingActionButton clapsButton;
     private StoryViewModel storyViewModel;
     private DatabaseReference notificationReference;
+    private String storyId;
     private final int[] colors = {
             R.color.color1,
             R.color.color2,
@@ -68,7 +69,7 @@ public class StoryActivity extends AppCompatActivity {
         storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
         notificationReference = FirebaseDatabase.getInstance().getReference();
         // Get story key from intent
-        String storyId = getIntent().getStringExtra(EXTRA_STORY_ID_KEY);
+        storyId = getIntent().getStringExtra(EXTRA_STORY_ID_KEY);
         if (storyId == null) {
             throw new IllegalArgumentException("Must pass EXTRA_STORY_ID_KEY");
         }
@@ -156,7 +157,7 @@ public class StoryActivity extends AppCompatActivity {
         clapsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storyViewModel.clap();
+                storyViewModel.clap(storyId);
             }
         });
     }
@@ -183,10 +184,11 @@ public class StoryActivity extends AppCompatActivity {
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(false);
         actionButton.setBackgroundColor(Color.YELLOW);
+        nextContentEditText.setVisibility(View.VISIBLE);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storyViewModel.sendContent(nextContentEditText.getText().toString());
+                storyViewModel.sendContent(nextContentEditText.getText().toString(), storyId);
             }
         });
         nextContentEditText.addTextChangedListener(new TextWatcher() {
@@ -226,7 +228,7 @@ public class StoryActivity extends AppCompatActivity {
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storyViewModel.joinStory();
+                storyViewModel.joinStory(storyId);
             }
         });
     }
