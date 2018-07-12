@@ -13,7 +13,7 @@ public class TopStoriesFragment extends StoryListFragment {
         // My top stories by number of claps
         String myUserId = getUid();
         Query myTopStoriesQuery = databaseReference.child("user-stories").child(myUserId)
-                .orderByChild("clapsCount");
+                .orderByKey().equalTo("clapsCount");
         // [END my_top_posts_query]
 
         return myTopStoriesQuery;

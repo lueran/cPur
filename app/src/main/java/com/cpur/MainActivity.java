@@ -36,9 +36,8 @@ public class MainActivity extends BaseActivity {
                         new TopStoriesFragment(),
                 };
                 private final String[] mFragmentNames = new String[] {
-                        getString(R.string.heading_recent),
+                        getString(R.string.discover),
                         getString(R.string.heading_my_stories),
-                        getString(R.string.heading_my_top_stories)
                 };
                 @Override
                 public Fragment getItem(int position) {

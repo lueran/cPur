@@ -20,6 +20,8 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     private GlideRequests with;
     private ImageView coverImageView;
     private Drawable readDraw;
+    private Drawable fallback;
+
 
 
     public StoryViewHolder(View itemView) {
@@ -31,6 +33,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         with = GlideApp.with(itemView);
         readDraw = itemView.getResources().getDrawable(R.drawable.ic_glasses);
         joinDraw = itemView.getResources().getDrawable(R.drawable.join);
+        fallback = itemView.getResources().getDrawable(R.drawable.pizza_monster);
 
     }
 
@@ -41,7 +44,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         }
         Uri uri = Uri.parse(coverImageId);
         if (uri != null){
-            with.load(coverImageId).into(coverImageView);
+            with.load(coverImageId).fallback(fallback).into(coverImageView);
         }
         titleView.setText(story.getTitle());
         numClapsView.setText(String.valueOf(story.getClaps()));

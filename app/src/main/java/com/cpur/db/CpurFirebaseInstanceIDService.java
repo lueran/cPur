@@ -44,11 +44,14 @@ public class CpurFirebaseInstanceIDService extends FirebaseInstanceIdService {
          */
         private void sendRegistrationToServer(String token) {
             String uid = FirebaseAuth.getInstance().getUid();
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference databaseReference = mDatabase.child("users").child(uid);
-            Map<String, Object> stringObjectMap = new HashMap<>();
-            stringObjectMap.put("notificationToken", token);
-            databaseReference.updateChildren(stringObjectMap);
+            if (uid != null){
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference databaseReference = mDatabase.child("users").child(uid);
+                Map<String, Object> stringObjectMap = new HashMap<>();
+                stringObjectMap.put("notificationToken", token);
+                databaseReference.updateChildren(stringObjectMap);
+            }
+
         }
 
 }

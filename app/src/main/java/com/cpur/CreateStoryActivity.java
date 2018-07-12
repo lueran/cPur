@@ -103,11 +103,16 @@ public class CreateStoryActivity extends BaseActivity {
 
         // Validation
         if (!TextUtils.isEmpty(maxRoundsString)){
-            numRoundsValue = Integer.valueOf(maxRoundsString);
+            titleEditText.setError(REQUIRED);
+            return;
         }
-        if (!TextUtils.isEmpty(maxPartString)){
-            numParticipantsValue = Integer.valueOf(maxPartString);
+
+        if (TextUtils.isEmpty(maxPartString)){
+            titleEditText.setError(REQUIRED);
+            return;
         }
+        numRoundsValue = Integer.valueOf(maxRoundsString);
+        numParticipantsValue = Integer.valueOf(maxPartString);
         // Title is required
         if (TextUtils.isEmpty(title)) {
             titleEditText.setError(REQUIRED);
@@ -116,12 +121,16 @@ public class CreateStoryActivity extends BaseActivity {
 
         if (numParticipantsValue < 3) {
             maxPartEditText.setError("Minimum 3 Participants");
+            return;
+
         } else if (numParticipantsValue > 10) {
             maxPartEditText.setError("Max 10 Participants");
+            return;
         }
 
         if (numRoundsValue < 5) {
             maxRoundsEditText.setError("Minimum 5 Rounds");
+            return;
         }
 
         // Body is required
@@ -144,23 +153,21 @@ public class CreateStoryActivity extends BaseActivity {
     }
 
     private void uploadImage() {
-
-        uploadProgressDialog.show();
         if (coverImageUri != null) {
-            imageId = UUID.randomUUID().toString();
-            final StorageReference filepath = storageReference.child("images/" + imageId);
+            uploadProgressDialog.show();
+            String imageUUID = UUID.randomUUID().toString();
+            final StorageReference filepath = storageReference.child("images/" + imageUUID);
             filepath.putFile(coverImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    uploadProgressDialog.dismiss();
                     imageId = filepath.getDownloadUrl().toString();
+                    uploadProgressDialog.dismiss();
                     Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            uploadProgressDialog.dismiss();
                             imageId = DEFAULT_IMG_URI;
                             Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
                         }
@@ -172,7 +179,9 @@ public class CreateStoryActivity extends BaseActivity {
                     uploadProgressDialog.setMessage("Uploaded " + progress + "%" );
                 }
             });
+            uploadProgressDialog.dismiss();
         }
+
     }
 
     @Override

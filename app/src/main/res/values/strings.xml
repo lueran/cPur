@@ -43,6 +43,7 @@
     <string name="previous_content">...</string>
     <string name="continue_the_story_here">Continue the story here</string>
     <string name="buzz_format">Buzz %s</string>
+    <string name="discover">Discover</string>
     <plurals name="minimum_par_to_start">
         <item quantity="one">Need minimum %d more user to start</item>
         <item quantity="other">Need minimum %d more users to start</item>
