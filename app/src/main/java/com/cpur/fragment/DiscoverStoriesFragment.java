@@ -3,9 +3,9 @@ package com.cpur.fragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
-public class RecentStoriesFragment extends StoryListFragment {
+public class DiscoverStoriesFragment extends StoryListFragment {
 
-    public RecentStoriesFragment() {}
+    public DiscoverStoriesFragment() {}
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
