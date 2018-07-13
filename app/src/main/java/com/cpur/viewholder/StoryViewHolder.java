@@ -35,7 +35,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
         with = GlideApp.with(itemView);
         resources = itemView.getResources();
-        fallback = itemView.getResources().getDrawable(R.drawable.pizza_monster);
+        fallback = itemView.getResources().getDrawable(R.drawable.logo);
 
     }
 

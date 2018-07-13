@@ -1,27 +1,37 @@
 package com.cpur;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashActivity extends AppCompatActivity {
+    private FirebaseAuth auth;
+    private Intent startIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        Intent startIntent;
+        auth = FirebaseAuth.getInstance();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         if (auth.getCurrentUser() != null) {
-            startIntent = new Intent(this, CreateStoryActivity.class);
+            startIntent = new Intent(this, MainActivity.class);
         } else {
             startIntent = new Intent(this, LoginActivity.class);
         }
 
-        startActivity(startIntent);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(startIntent);
+            }
+
+        }, 1500);
+
     }
 }

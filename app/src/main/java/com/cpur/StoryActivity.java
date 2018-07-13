@@ -3,6 +3,7 @@ package com.cpur;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +39,7 @@ public class StoryActivity extends AppCompatActivity {
     private FloatingActionButton clapsButton;
     private StoryViewModel storyViewModel;
     private DatabaseReference notificationReference;
+    private TextView storyTitleTextView;
     private String storyId;
     private final int[] colors = {
             R.color.color1,
@@ -66,6 +68,8 @@ public class StoryActivity extends AppCompatActivity {
         nextLayout = findViewById(R.id.next_layout);
         actionButton = findViewById(R.id.action_button);
         clapsButton = findViewById(R.id.claps_button);
+        storyTitleTextView = findViewById(R.id.theStoryTitle);
+
         storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
         notificationReference = FirebaseDatabase.getInstance().getReference();
         // Get story key from intent
@@ -98,8 +102,10 @@ public class StoryActivity extends AppCompatActivity {
         } else {
             sentence = new StringBuilder("Be the first");
         }
-
-        setTitle(story.getTitle());
+        String storyTitle = story.getTitle();
+//        setTitle(storyTitle);
+        storyTitleTextView.setText(storyTitle);
+        storyTitleTextView.setPaintFlags(storyTitleTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         String prevContent = String.format("%s %s", getString(R.string.previous_content), sentence.toString());
         boolean isParticipants = storyViewModel.isParticipants();
         boolean isMyTurn = storyViewModel.isMyTurn();
@@ -112,7 +118,7 @@ public class StoryActivity extends AppCompatActivity {
                 if (!isParticipants) {
                     showJoin();
                 } else {
-                    showWaitingForMor(story);
+                    showWaitingForMore(story);
                 }
                 clapsButton.setVisibility(View.GONE);
             }
@@ -181,6 +187,7 @@ public class StoryActivity extends AppCompatActivity {
     private void showMyTurn(String prevContent) {
         previousContentTextView.setText(prevContent);
         actionButton.setText(R.string.send);
+        nextContentEditText.setHint(R.string.continue_the_story_here);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(false);
         actionButton.setBackgroundColor(Color.YELLOW);
@@ -209,12 +216,13 @@ public class StoryActivity extends AppCompatActivity {
         });
     }
 
-    private void showWaitingForMor(Story story) {
+    private void showWaitingForMore(Story story) {
         actionButton.setVisibility(View.GONE);
+        infoMessageTextView.setVisibility(View.GONE);
         nextContentEditText.setVisibility(View.VISIBLE);
         nextLayout.setVisibility(View.VISIBLE);
         int quantity = story.getMinParticipants() - story.getParticipants().size();
-        nextContentEditText.setText(getResources().getQuantityString(R.plurals.minimum_par_to_start,
+        nextContentEditText.setHint(getResources().getQuantityString(R.plurals.minimum_par_to_start,
                 quantity, quantity));
         nextContentEditText.setEnabled(false);
     }
