@@ -1,7 +1,11 @@
 package com.cpur;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,9 +14,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
+import com.cpur.data.source.local.StoryLocalDataSource;
+import com.cpur.db.AppDatabase;
 import com.cpur.fragment.DiscoverStoriesFragment;
 import com.cpur.fragment.MyStoryFragment;
+import com.cpur.utils.AppExecutors;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";

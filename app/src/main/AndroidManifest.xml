@@ -11,6 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name="com.App"
         android:logo="@drawable/logo"
         android:theme="@style/AppTheme">
         <activity
@@ -34,8 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StoryDetailActivity"></activity>
-        <activity android:name=".BaseActivity" />
         <activity android:name=".UserSettingActivity" />
         <activity android:name=".StoryActivity"
             android:windowSoftInputMode="adjustPan"></activity>

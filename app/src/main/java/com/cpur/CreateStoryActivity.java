@@ -57,8 +57,8 @@ public class CreateStoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_story);
-
-        createStoryViewModel = ViewModelProviders.of(this).get(CreateStoryViewModel.class);
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+        createStoryViewModel = ViewModelProviders.of(this, factory).get(CreateStoryViewModel.class);
         titleEditText = findViewById(R.id.story_title);
         contentEditText = findViewById(R.id.content);
         maxPartEditText = findViewById(R.id.maxPart);

@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cpur.R;
-import com.cpur.models.Story;
+import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
 
 public class StoryViewHolder extends RecyclerView.ViewHolder {
 
@@ -39,7 +40,8 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void bindToPost(Story story, View.OnClickListener starClickListener) {
+    public void bindToPost(StoryAllParagraph storyAllParagraph, View.OnClickListener starClickListener) {
+        Story story = storyAllParagraph.getStory();
         String coverImageId = story.getCoverImage();
         if (coverImageId == null){
             coverImageId = DEFAULT_IMG_URI;

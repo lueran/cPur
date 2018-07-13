@@ -3,6 +3,7 @@ package com.cpur.data;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
@@ -34,8 +35,6 @@ public class Story {
 
     private String title;
     private String author;
-    @Ignore
-    private List<Paragraph> content;
     private String coverImage;
     private int minParticipants = 3;
     private int maxParticipants;
@@ -51,10 +50,9 @@ public class Story {
     public Story() {
     }
 
-    public Story(String author, String title, List<Paragraph> content, String coverImage, int maxParticipants, int numRounds, List<String> participants) {
+    public Story(String author, String title, String coverImage, int maxParticipants, int numRounds, List<String> participants) {
         this.title = title;
         this.author = author;
-        this.content = content;
         this.coverImage = coverImage;
         this.maxParticipants = maxParticipants;
         this.numRounds = numRounds;
@@ -75,14 +73,6 @@ public class Story {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public List<Paragraph> getContent() {
-        return content;
-    }
-
-    public void setContent(List<Paragraph> content) {
-        this.content = content;
     }
 
     public String getCoverImage() {

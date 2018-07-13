@@ -13,7 +13,7 @@ public class DiscoverStoriesFragment extends StoryListFragment {
         // Last 100 stories, these are automatically the 100 most recent
         // due to sorting by push() keys
 
-        Query recentStoriesQuery = databaseReference.child("stories");
+        Query recentStoriesQuery = databaseReference.child("new-stories");
                 ;
         // [END recent_posts_query]
 

@@ -26,22 +26,15 @@ import java.util.List;
  */
 public interface StoryDataSource {
 
-    interface LoadStoryCallback {
+    void createStory(Story story, Paragraph paragraph);
 
-        void onStoryLoaded(List<Story> tasks);
-
-        void onDataNotAvailable();
-    }
-
-    interface GetStoryCallback {
-
-        void onStoryLoaded(Story task);
-
-        void onDataNotAvailable();
+    interface GetStoryCallback<T> {
+        void  onComplete(T t);
+        void  onError();
     }
 
 
-    void getStory(@NonNull String storyId, @NonNull GetStoryCallback callback);
+    void getStory(@NonNull String storyId, @NonNull GetStoryCallback<StoryAllParagraph> callback);
 
-    void saveStory(@NonNull Story story);
+    void saveStory(@NonNull StoryAllParagraph story);
 }

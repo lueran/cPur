@@ -16,14 +16,18 @@
 
 package com.cpur.data.source.local;
 
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.cpur.data.Paragraph;
 import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
 import com.cpur.data.StoryDao;
 import com.cpur.data.StoryDataSource;
 import com.cpur.utils.AppExecutors;
 
+import java.util.List;
 
 
 /**
@@ -57,21 +61,25 @@ public class StoryLocalDataSource implements StoryDataSource {
     }
 
 
+    @Override
+    public void createStory(Story story, Paragraph paragraph) {
+
+    }
 
     @Override
-    public void getStory(@NonNull final String storyId, @NonNull final GetStoryCallback callback) {
+    public void getStory(@NonNull final String storyId, @NonNull final GetStoryCallback<StoryAllParagraph> callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final Story story = mStoryDao.loadStoryById(storyId);
+                final StoryAllParagraph story = mStoryDao.loadStoryAllParagraphById(storyId);
 
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
                         if (story != null) {
-                            callback.onStoryLoaded(story);
+                            callback.onComplete(story);
                         } else {
-                            callback.onDataNotAvailable();
+                            callback.onError();
                         }
                     }
                 });
@@ -82,11 +90,11 @@ public class StoryLocalDataSource implements StoryDataSource {
     }
 
     @Override
-    public void saveStory(@NonNull final Story story) {
+    public void saveStory(@NonNull final StoryAllParagraph storyAllParagraph) {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
-                mStoryDao.insertAll(story);
+                mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(),storyAllParagraph.getParagraphs());
             }
         };
         mAppExecutors.diskIO().execute(saveRunnable);

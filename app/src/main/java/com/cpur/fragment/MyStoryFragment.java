@@ -10,7 +10,7 @@ public class MyStoryFragment extends StoryListFragment {
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
         // All my stories
-        return databaseReference.child("user-stories")
+        return databaseReference.child("new-user-stories")
                 .child(getUid());
     }
 }

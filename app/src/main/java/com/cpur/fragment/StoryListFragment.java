@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.cpur.R;
 import com.cpur.StoryActivity;
 import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
 import com.cpur.viewholder.StoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -35,7 +36,7 @@ public abstract class StoryListFragment extends Fragment {
     private DatabaseReference mDatabase;
     // [END define_database_reference]
 
-    private FirebaseRecyclerAdapter<Story, StoryViewHolder> mAdapter;
+    private FirebaseRecyclerAdapter<StoryAllParagraph, StoryViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private GridLayoutManager mManager;
 
@@ -71,11 +72,11 @@ public abstract class StoryListFragment extends Fragment {
         // Set up FirebaseRecyclerAdapter with the Query
         Query postsQuery = getQuery(mDatabase);
 
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Story>()
-                .setQuery(postsQuery, Story.class)
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<StoryAllParagraph>()
+                .setQuery(postsQuery, StoryAllParagraph.class)
                 .build();
 
-        mAdapter = new FirebaseRecyclerAdapter<Story, StoryViewHolder>(options) {
+        mAdapter = new FirebaseRecyclerAdapter<StoryAllParagraph, StoryViewHolder>(options) {
 
             @Override
             public StoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -84,7 +85,7 @@ public abstract class StoryListFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(StoryViewHolder viewHolder, int position, final Story model) {
+            protected void onBindViewHolder(StoryViewHolder viewHolder, int position, final StoryAllParagraph model) {
                 final DatabaseReference postRef = getRef(position);
 
                 // Set click listener for the whole story view
@@ -105,12 +106,12 @@ public abstract class StoryListFragment extends Fragment {
                     @Override
                     public void onClick(View starView) {
                         // Need to write to both places the story is stored
-                        DatabaseReference globalPostRef = mDatabase.child("stories").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-stories").child(model.getUid()).child(postRef.getKey());
+                        DatabaseReference globalPostRef = mDatabase.child("new-stories").child(postRef.getKey());
+//                        DatabaseReference userPostRef = mDatabase.child("new-user-stories").child(model.getUid()).child(postRef.getKey());
 
                         // Run two transactions
                         onStarClicked(globalPostRef);
-                        onStarClicked(userPostRef);
+//                        onStarClicked(userPostRef);
                     }
                 });
             }

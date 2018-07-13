@@ -21,8 +21,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cpur.models.Paragraph;
-import com.cpur.models.Story;
+import com.cpur.data.Paragraph;
+import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -71,7 +72,8 @@ public class StoryActivity extends AppCompatActivity {
         clapsButton = findViewById(R.id.claps_button);
         storyTitleTextView = findViewById(R.id.theStoryTitle);
 
-        storyViewModel = ViewModelProviders.of(this).get(StoryViewModel.class);
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+        storyViewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
         notificationReference = FirebaseDatabase.getInstance().getReference();
         // Get story key from intent
         storyId = getIntent().getStringExtra(EXTRA_STORY_ID_KEY);
@@ -82,10 +84,10 @@ public class StoryActivity extends AppCompatActivity {
         // Initialize Database
         storyViewModel.start(storyId);
 
-        storyViewModel.getStory().observe(this, new Observer<Story>() {
+        storyViewModel.getStory().observe(this, new Observer<StoryAllParagraph>() {
             @Override
-            public void onChanged(@Nullable Story story) {
-                if (story != null){
+            public void onChanged(@Nullable StoryAllParagraph story) {
+                if (story != null) {
                     setData(story);
                 }
 
@@ -93,16 +95,17 @@ public class StoryActivity extends AppCompatActivity {
         });
     }
 
-    private void setData(final Story story) {
-        int size = story.getContent().size();
+    private void setData(final StoryAllParagraph storyAllParagraph) {
+        int size = storyAllParagraph.getParagraphs().size();
         StringBuilder sentence;
         if (size > 0) {
-            Paragraph p = story.getContent().get(size - 1);
+            Paragraph p = storyAllParagraph.getParagraphs().get(size - 1);
             sentence = new StringBuilder(p.getSuffixBody());
 
         } else {
             sentence = new StringBuilder("Be the first");
         }
+        Story story = storyAllParagraph.getStory();
         String storyTitle = story.getTitle();
 //        setTitle(storyTitle);
         storyTitleTextView.setText(storyTitle);
@@ -125,35 +128,35 @@ public class StoryActivity extends AppCompatActivity {
             }
             break;
             case IN_PROGRESS: {
-                if (isParticipants){
+                if (isParticipants) {
                     if (isMyTurn) {
                         showMyTurn(prevContent);
                     } else {
-                        if (isMyContent){
+                        if (isMyContent) {
                             previousContentTextView.setText(prevContent);
                         }
                         showBuzzUser(story);
                     }
-                }else{
+                } else {
                     showJoin();
                 }
                 clapsButton.setVisibility(View.GONE);
             }
             break;
             case COMPLETED: {
-                showCompleteStory(story);
+                showCompleteStory(storyAllParagraph);
             }
             break;
         }
     }
 
-    private void showCompleteStory(Story story) {
+    private void showCompleteStory(StoryAllParagraph story) {
         SpannableStringBuilder fullStory = new SpannableStringBuilder();
 
-        for (int paragraphAt = 0; paragraphAt < story.getContent().size(); paragraphAt++) {
-            Paragraph p = story.getContent().get(paragraphAt);
+        for (int paragraphAt = 0; paragraphAt < story.getParagraphs().size(); paragraphAt++) {
+            Paragraph p = story.getParagraphs().get(paragraphAt);
             fullStory.append(" ").append(p.getBody(), new ForegroundColorSpan(ContextCompat.getColor(getBaseContext(),
-                    colors[paragraphAt % story.getParticipants().size()])), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    colors[paragraphAt % story.getStory().getParticipants().size()])), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         actionButton.setVisibility(View.GONE);
@@ -247,7 +250,7 @@ public class StoryActivity extends AppCompatActivity {
         String key = notificationReference.child("buzzes").push().getKey();
         String nextTurnUID = story.getNextTurnUID();
         Map<String, String> data = new HashMap<>();
-        data.put("fromUID",uid );
+        data.put("fromUID", uid);
         data.put("toUID", nextTurnUID);
         data.put("storyTitle", story.getTitle());
         data.put("storyUID", story.getUid());

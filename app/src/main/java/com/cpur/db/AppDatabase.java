@@ -7,7 +7,9 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.cpur.data.Paragraph;
+import com.cpur.data.ParagraphDao;
 import com.cpur.data.Story;
+import com.cpur.data.StoryDao;
 import com.cpur.data.User;
 import com.cpur.data.UserDao;
 
@@ -15,6 +17,8 @@ import com.cpur.data.UserDao;
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
+    public abstract StoryDao storyDao();
+    public abstract ParagraphDao paragraphDao();
 
     private static AppDatabase INSTANCE;
 

@@ -7,9 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.ServerValue;
 
-import java.util.HashMap;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -24,19 +22,14 @@ public class Paragraph {
     private String authorId;
     private String body;
     private String storyId;
-    @Ignore
-    private HashMap<String, Object> dateCreated;
 
     public Paragraph() {
     }
 
-    public Paragraph(String authorId, String body) {
+    public Paragraph(String uid, String authorId, String body) {
+        this.uid = uid;
         this.authorId = authorId;
         this.body = body;
-        HashMap<String, Object> dateLastChangedObj = new HashMap<>();
-        dateLastChangedObj.put("date", ServerValue.TIMESTAMP);
-        this.dateCreated = dateLastChangedObj;
-
     }
 
     public String getUid() {

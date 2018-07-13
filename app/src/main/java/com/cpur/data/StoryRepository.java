@@ -16,9 +16,12 @@
 
 package com.cpur.data;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -28,10 +31,10 @@ import java.util.Map;
  * For simplicity, this implements a dumb synchronisation between locally persisted data and data
  * obtained from the server, by using the remote data source only if the local database doesn't
  * exist or is empty.
- *
+ * <p>
  * //TODO: Implement this class using LiveData.
  */
-public class StoryRepository implements StoryDataSource {
+public class StoryRepository {
 
     private volatile static StoryRepository INSTANCE = null;
 
@@ -85,20 +88,14 @@ public class StoryRepository implements StoryDataSource {
     }
 
 
-    @Override
-    public void saveStory(@NonNull Story story) {
+    public void saveStory(@NonNull StoryAllParagraph story) {
         mStoryRemoteDataSource.saveStory(story);
-        mStoryLocalDataSource.saveStory(story);
 
         // Do in memory cache update to keep the app UI up to date
-        if (mCachedStorys == null) {
-            mCachedStorys = new LinkedHashMap<>();
-        }
-        mCachedStorys.put(story.getUid(), story);
     }
 
 
-    @Override
+   /* @Override
     public void getStory(@NonNull final String storyId, @NonNull final GetStoryCallback callback) {
 
         Story cachedTask = getStoryWithId(storyId);
@@ -147,7 +144,61 @@ public class StoryRepository implements StoryDataSource {
                 });
             }
         });
+    }*/
+
+    public LiveData<StoryAllParagraph> getStory(@NonNull final String storyId) {
+
+        return new MutableLiveData<StoryAllParagraph>() {
+            @Override
+            protected void onActive() {
+                super.onActive();
+
+                mStoryLocalDataSource.getStory(storyId, new StoryDataSource.GetStoryCallback<StoryAllParagraph>() {
+
+                    @Override
+                    public void onComplete(StoryAllParagraph story) {
+                        setValue(story);
+
+                        mStoryRemoteDataSource.getStory(storyId, new StoryDataSource.GetStoryCallback<StoryAllParagraph>() {
+                            @Override
+                            public void onComplete(StoryAllParagraph story) {
+                                setValue(story);
+                                mStoryLocalDataSource.saveStory(story);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        mStoryRemoteDataSource.getStory(storyId, new StoryDataSource.GetStoryCallback<StoryAllParagraph>() {
+                            @Override
+                            public void onComplete(StoryAllParagraph story) {
+                                setValue(story);
+                                mStoryLocalDataSource.saveStory(story);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            protected void onInactive() {
+                super.onInactive();
+            }
+        };
     }
+
 
     private Story getStoryWithId(@NonNull String id) {
         if (mCachedStorys == null || mCachedStorys.isEmpty()) {
@@ -155,5 +206,9 @@ public class StoryRepository implements StoryDataSource {
         } else {
             return mCachedStorys.get(id);
         }
+    }
+
+    public void createStory(Story story, Paragraph paragraph) {
+        mStoryRemoteDataSource.createStory(story, paragraph);
     }
 }
