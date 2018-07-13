@@ -2,6 +2,7 @@ package com.cpur;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
@@ -37,8 +38,7 @@ public class StoryActivity extends AppCompatActivity {
     private TextView previousContentTextView;
     private TextView infoMessageTextView;
     private EditText nextContentEditText;
-    private Button actionButton;
-    private FloatingActionButton clapsButton;
+    private FloatingActionButton actionButton;
     private StoryViewModel storyViewModel;
     private DatabaseReference notificationReference;
     private TextView storyTitleTextView;
@@ -69,7 +69,6 @@ public class StoryActivity extends AppCompatActivity {
         nextContentEditText = findViewById(R.id.next_content);
         nextLayout = findViewById(R.id.next_layout);
         actionButton = findViewById(R.id.action_button);
-        clapsButton = findViewById(R.id.claps_button);
         storyTitleTextView = findViewById(R.id.theStoryTitle);
 
         ViewModelFactory factory = ViewModelFactory.getInstance();
@@ -124,7 +123,6 @@ public class StoryActivity extends AppCompatActivity {
                 } else {
                     showWaitingForMore(story);
                 }
-                clapsButton.setVisibility(View.GONE);
             }
             break;
             case IN_PROGRESS: {
@@ -140,7 +138,6 @@ public class StoryActivity extends AppCompatActivity {
                 } else {
                     showJoin();
                 }
-                clapsButton.setVisibility(View.GONE);
             }
             break;
             case COMPLETED: {
@@ -159,47 +156,56 @@ public class StoryActivity extends AppCompatActivity {
                     colors[paragraphAt % story.getStory().getParticipants().size()])), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        actionButton.setVisibility(View.GONE);
         previousContentTextView.setText(fullStory);
         nextContentEditText.setVisibility(View.GONE);
         nextLayout.setVisibility(View.GONE);
-        clapsButton.setVisibility(View.VISIBLE);
-        clapsButton.setOnClickListener(new View.OnClickListener() {
+        actionButton.setVisibility(View.VISIBLE);
+        actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.clap)));
+        actionButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.logo));
+        actionButton.setRippleColor(getResources().getColor(R.color.clap_light));
+        actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 storyViewModel.clap(storyId);
+                Snackbar.make(v, "You Clapped", Snackbar.LENGTH_LONG).show();
+
             }
         });
     }
 
     private void showBuzzUser(final Story story) {
-        actionButton.setText(getString(R.string.buzz_format, "User X"));
-        actionButton.setEnabled(true);
         nextLayout.setVisibility(View.GONE);
         infoMessageTextView.setEnabled(false);
         infoMessageTextView.setText("Waiting for next user to response");
-        actionButton.setBackgroundColor(Color.RED);
+        actionButton.setEnabled(true);
+        actionButton.setVisibility(View.VISIBLE);
+        actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buzz)));
+        actionButton.setImageResource(R.drawable.ic_bee);
+        actionButton.setRippleColor(getResources().getColor(R.color.buzz_light));
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 buzzNextUser(story);
-                Toast.makeText(getBaseContext(), "Buzzed..", Toast.LENGTH_LONG).show();
+                Snackbar.make(v, "You Buzzed...", Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     private void showMyTurn(String prevContent) {
         previousContentTextView.setText(prevContent);
-        actionButton.setText(R.string.send);
         nextContentEditText.setHint(R.string.continue_the_story_here);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(false);
-        actionButton.setBackgroundColor(Color.YELLOW);
+        actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.send)));
+        actionButton.setRippleColor(getResources().getColor(R.color.send_light));
+        actionButton.setImageResource(R.drawable.ic_send_black_24dp);
         nextContentEditText.setVisibility(View.VISIBLE);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 storyViewModel.sendContent(nextContentEditText.getText().toString(), storyId);
+                Snackbar.make(v, "Published" + storyTitleTextView.getText().toString(), Snackbar.LENGTH_LONG).show();
+
             }
         });
         nextContentEditText.addTextChangedListener(new TextWatcher() {
@@ -234,13 +240,15 @@ public class StoryActivity extends AppCompatActivity {
     private void showJoin() {
         nextContentEditText.setVisibility(View.GONE);
         nextLayout.setVisibility(View.GONE);
-        actionButton.setText(R.string.join);
         actionButton.setVisibility(View.VISIBLE);
-        actionButton.setBackgroundColor(Color.BLUE);
+        actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.join)));
+        actionButton.setImageResource(R.drawable.ic_join);
+        actionButton.setRippleColor(getResources().getColor(R.color.join_light));
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 storyViewModel.joinStory(storyId);
+                Snackbar.make(v, "You Joined " + storyTitleTextView.getText().toString(), Snackbar.LENGTH_LONG).show();
             }
         });
     }

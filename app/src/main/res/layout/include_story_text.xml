@@ -7,15 +7,7 @@
     android:orientation="vertical"
     style="@style/AppTheme"
     >
-    <ImageView
-        android:id="@+id/textViewBackground"
-        style="@style/BackGroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        tools:ignore="ContentDescription" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,18 +17,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/story_title"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:fontFamily="@font/type_writer_font"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            tools:text="My First Story" />
+
 
     </LinearLayout>
 </RelativeLayout>

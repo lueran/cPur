@@ -54,7 +54,7 @@ public abstract class StoryListFragment extends Fragment {
         // [END create_database_reference]
 
         mRecycler = rootView.findViewById(R.id.messages_list);
-        mRecycler.setHasFixedSize(true);
+        mRecycler.setHasFixedSize(false);
 
         return rootView;
     }
@@ -65,8 +65,6 @@ public abstract class StoryListFragment extends Fragment {
 
         // Set up Layout Manager, reverse layout
         mManager = new GridLayoutManager(getActivity(),2);
-        mManager.setReverseLayout(true);
-//        mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
@@ -161,6 +159,13 @@ public abstract class StoryListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
 
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
