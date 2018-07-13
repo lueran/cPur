@@ -3,6 +3,7 @@ package com.cpur.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,7 +37,7 @@ public abstract class StoryListFragment extends Fragment {
 
     private FirebaseRecyclerAdapter<Story, StoryViewHolder> mAdapter;
     private RecyclerView mRecycler;
-    private LinearLayoutManager mManager;
+    private GridLayoutManager mManager;
 
     public StoryListFragment() {
     }
@@ -62,9 +63,9 @@ public abstract class StoryListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Set up Layout Manager, reverse layout
-        mManager = new LinearLayoutManager(getActivity());
+        mManager = new GridLayoutManager(getActivity(),2);
         mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
+//        mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query

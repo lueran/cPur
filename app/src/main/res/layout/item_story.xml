@@ -3,66 +3,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    android:theme="@style/AppTheme">
 
     <RelativeLayout
         android:id="@+id/story_rl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="178dp"
+        android:layout_height="244dp"
         android:padding="10dp">
 
-        <include
-            android:id="@+id/post_author_layout"
-            layout="@layout/include_story_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true" />
 
         <LinearLayout
             android:id="@+id/star_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="359dp"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/post_author_layout"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/post_author_layout"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="0dp">
 
+            <ImageView
+                android:id="@+id/statusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_join"
+                android:layout_gravity="start"/>
             <TextView
-                android:id="@+id/story_status"
-                style="@style/Base.TextAppearance.AppCompat.Small"
+                android:id="@+id/numOfPathOutOf"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                tools:text="IN_PROGRESS
-" />
-
+                android:gravity="center"
+                android:layout_marginEnd="38dp"
+                android:layout_gravity="start"
+                tools:text="2/3" />
             <ImageView
                 android:id="@+id/clapsImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginEnd="5dp"
-                android:background="?attr/selectableItemBackground"
-                android:src="@drawable/ic_claps" />
-
+                android:layout_marginStart="30dp"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_claps"
+                android:scaleType="centerCrop"/>
             <TextView
                 android:id="@+id/post_num_claps"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_height="match_parent"
                 android:gravity="center"
+                android:layout_gravity="end"
                 tools:text="7" />
+
+
 
         </LinearLayout>
 
         <include
             layout="@layout/include_story_text"
             android:layout_width="wrap_content"
-            android:layout_height="112dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/post_author_layout"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp" />
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="6dp" />
 
     </RelativeLayout>
 
