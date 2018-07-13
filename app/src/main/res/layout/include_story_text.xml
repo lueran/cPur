@@ -5,37 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    style="@style/AppTheme"
     >
 
-    <ImageView
-        android:id="@+id/textViewBackground"
-        style="@style/BackGroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        tools:ignore="ContentDescription" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical" >
-        <TextView
-            android:id="@+id/story_title"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            tools:text="My First Story" />
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/story_body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            tools:text="@string/lorem" />
+
+
     </LinearLayout>
 </RelativeLayout>

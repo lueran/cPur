@@ -3,6 +3,7 @@ package com.cpur.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +39,7 @@ public abstract class StoryListFragment extends Fragment {
 
     private FirebaseRecyclerAdapter<Story, StoryViewHolder> mAdapter;
     private RecyclerView mRecycler;
-    private LinearLayoutManager mManager;
+    private GridLayoutManager mManager;
 
     public StoryListFragment() {
     }
@@ -54,7 +55,7 @@ public abstract class StoryListFragment extends Fragment {
         // [END create_database_reference]
 
         mRecycler = rootView.findViewById(R.id.messages_list);
-        mRecycler.setHasFixedSize(true);
+        mRecycler.setHasFixedSize(false);
 
         return rootView;
     }
@@ -64,9 +65,7 @@ public abstract class StoryListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Set up Layout Manager, reverse layout
-        mManager = new LinearLayoutManager(getActivity());
-        mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
+        mManager = new GridLayoutManager(getActivity(),2);
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
@@ -161,6 +160,13 @@ public abstract class StoryListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
 
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
