@@ -1,18 +1,25 @@
 package com.cpur.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.StoryAdapter;
 import com.cpur.R;
 import com.cpur.StoryActivity;
+import com.cpur.StoryListViewModel;
+import com.cpur.StoryViewModel;
+import com.cpur.ViewModelFactory;
 import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;
 import com.cpur.viewholder.StoryViewHolder;
@@ -27,150 +34,67 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 
+import java.util.Objects;
 
-public abstract class StoryListFragment extends Fragment {
+
+public class StoryListFragment extends Fragment {
 
     private static final String TAG = "StoryListFragment";
-
-    // [START define_database_reference]
-    private DatabaseReference mDatabase;
-    // [END define_database_reference]
-
-    private FirebaseRecyclerAdapter<StoryAllParagraph, StoryViewHolder> mAdapter;
+    private StoryAdapter mAdapter;
     private RecyclerView mRecycler;
-    private GridLayoutManager mManager;
+    private StoryListViewModel storyListViewModel;
+    int type = 0;
 
     public StoryListFragment() {
     }
 
+    public static StoryListFragment newInstance(int type) {
+
+        Bundle args = new Bundle();
+        args.putInt("type", type);
+
+        StoryListFragment fragment = new StoryListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+
         View rootView = inflater.inflate(R.layout.fragment_all_stories, container, false);
 
-        // [START create_database_reference]
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        // [END create_database_reference]
-
         mRecycler = rootView.findViewById(R.id.messages_list);
-        mRecycler.setHasFixedSize(false);
+        mRecycler.setHasFixedSize(false); // Don't Change  leave false
 
         return rootView;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewModelFactory factory = ViewModelFactory.getInstance();
+        storyListViewModel = ViewModelProviders.of(this, factory).get(StoryListViewModel.class);
+        Bundle args = getArguments();
+        type = Objects.requireNonNull(args).getInt("type");
 
-        // Set up Layout Manager, reverse layout
-        mManager = new GridLayoutManager(getActivity(),2);
+        mAdapter = new StoryAdapter();
+
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.setItemAnimator(new DefaultItemAnimator());
+
+        GridLayoutManager mManager = new GridLayoutManager(getActivity(), 2);
         mRecycler.setLayoutManager(mManager);
 
-        // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = getQuery(mDatabase);
-
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<StoryAllParagraph>()
-                .setQuery(postsQuery, StoryAllParagraph.class)
-                .build();
-
-        mAdapter = new FirebaseRecyclerAdapter<StoryAllParagraph, StoryViewHolder>(options) {
-
-            @Override
-            public StoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                return new StoryViewHolder(inflater.inflate(R.layout.item_story, viewGroup, false));
-            }
-
-            @Override
-            protected void onBindViewHolder(StoryViewHolder viewHolder, int position, final StoryAllParagraph model) {
-                final DatabaseReference postRef = getRef(position);
-
-                // Set click listener for the whole story view
-                final String postKey = postRef.getKey();
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Launch PostDetailActivity
-                        Intent intent = new Intent(getActivity(), StoryActivity.class);
-                        intent.putExtra(StoryActivity.EXTRA_STORY_ID_KEY, postKey);
-                        startActivity(intent);
-                    }
-                });
-
-                // Determine if the current user has liked this story and set UI accordingly
-                // Bind Story to ViewHolder, setting OnClickListener for the star button
-                viewHolder.bindToPost(model, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View starView) {
-                        // Need to write to both places the story is stored
-                        DatabaseReference globalPostRef = mDatabase.child("new-stories").child(postRef.getKey());
-//                        DatabaseReference userPostRef = mDatabase.child("new-user-stories").child(model.getUid()).child(postRef.getKey());
-
-                        // Run two transactions
-                        onStarClicked(globalPostRef);
-//                        onStarClicked(userPostRef);
-                    }
-                });
-            }
-        };
-        mRecycler.setAdapter(mAdapter);
-    }
-
-    // [START post_stars_transaction]
-    private void onStarClicked(DatabaseReference postRef) {
-        postRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Story s = mutableData.getValue(Story.class);
-                if (s == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(s);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                // Transaction completed
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
-            }
+        storyListViewModel.getStories(type).observe(this, (stories) ->{
+            mAdapter.setStories(stories);
         });
-    }
-    // [END post_stars_transaction]
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAdapter != null) {
-            mAdapter.stopListening();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
     }
 
     public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     }
-
-    public abstract Query getQuery(DatabaseReference databaseReference);
 
 }

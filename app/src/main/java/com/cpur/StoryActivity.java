@@ -89,7 +89,6 @@ public class StoryActivity extends AppCompatActivity {
                 if (story != null) {
                     setData(story);
                 }
-
             }
         });
     }

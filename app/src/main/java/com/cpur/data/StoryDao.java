@@ -19,8 +19,8 @@ public interface StoryDao {
     @Query("SELECT * FROM story WHERE uid = (:storyId)")
     Story loadStoryById(String storyId);
 
-    /*@Query("SELECT * FROM user WHERE username LIKE :username")
-    User findByName(String username);*/
+    @Query("SELECT * FROM story WHERE participants LIKE :uid")
+    List<StoryAllParagraph> userStories(String uid);
 
     @Query("SELECT * FROM story WHERE uid = (:storyId)")
     LiveData<Story> getStoryById(String storyId);

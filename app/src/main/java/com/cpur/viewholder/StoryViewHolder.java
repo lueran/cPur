@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.cpur.R;
 import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;
@@ -20,7 +22,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     private ImageView statusImage;
     private ImageView clapsImage;
     private TextView numClapsView;
-    private GlideRequests with;
+    private RequestManager with;
     private ImageView coverImageView;
     private Resources resources;
     private Drawable fallback;
@@ -35,13 +37,14 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         coverImageView = itemView.findViewById(R.id.textViewBackground);
         statusImage = itemView.findViewById(R.id.statusImage);
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
-        with = GlideApp.with(itemView);
+
+        with = Glide.with(itemView);
         resources = itemView.getResources();
         fallback = itemView.getResources().getDrawable(R.drawable.logo);
 
     }
 
-    public void bindToPost(StoryAllParagraph storyAllParagraph, View.OnClickListener starClickListener) {
+    public void bindToStory(StoryAllParagraph storyAllParagraph) {
         Story story = storyAllParagraph.getStory();
         String coverImageId = story.getCoverImage();
         if (coverImageId == null){
@@ -49,7 +52,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         }
         Uri uri = Uri.parse(coverImageId);
         if (uri != null){
-            with.load(coverImageId).fallback(fallback).into(coverImageView);
+            with.load(coverImageId).into(coverImageView);
         }
         titleView.setText(story.getTitle());
 
@@ -95,8 +98,5 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
 
         }
     }
-
-// Download directly from StorageReference using Glide
-// (See MyAppGlideModule for Loader registration)
 
 }

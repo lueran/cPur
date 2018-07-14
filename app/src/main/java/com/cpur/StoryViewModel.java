@@ -1,25 +1,13 @@
 package com.cpur;
 
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 import com.cpur.data.Paragraph;
-import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;
 import com.cpur.data.StoryRepository;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class StoryViewModel extends ViewModel {

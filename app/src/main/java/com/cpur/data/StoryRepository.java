@@ -20,7 +20,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class StoryRepository {
     /**
      * This variable has package local visibility so it can be accessed from tests.
      */
-    Map<String, Story> mCachedStorys;
+    Map<String, Story> mCachedStories;
 
     /**
      * Marks the cache as invalid, to force an update the next time data is requested. This variable
@@ -111,10 +110,10 @@ public class StoryRepository {
             @Override
             public void onStoryLoaded(Story story) {
                 // Do in memory cache update to keep the app UI up to date
-                if (mCachedStorys == null) {
-                    mCachedStorys = new LinkedHashMap<>();
+                if (mCachedStories == null) {
+                    mCachedStories = new LinkedHashMap<>();
                 }
-                mCachedStorys.put(story.getUid(), story);
+                mCachedStories.put(story.getUid(), story);
 
                 callback.onStoryLoaded(story);
             }
@@ -129,10 +128,10 @@ public class StoryRepository {
                             return;
                         }
                         // Do in memory cache update to keep the app UI up to date
-                        if (mCachedStorys == null) {
-                            mCachedStorys = new LinkedHashMap<>();
+                        if (mCachedStories == null) {
+                            mCachedStories = new LinkedHashMap<>();
                         }
-                        mCachedStorys.put(story.getUid(), story);
+                        mCachedStories.put(story.getUid(), story);
 
                         callback.onStoryLoaded(story);
                     }
@@ -199,12 +198,118 @@ public class StoryRepository {
         };
     }
 
+    public MutableLiveData<List<StoryAllParagraph>> getDiscoverStoriesLiveData() {
+
+        return new MutableLiveData<List<StoryAllParagraph>>() {
+            @Override
+            protected void onActive() {
+                super.onActive();
+
+                mStoryLocalDataSource.getAllStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+
+                    @Override
+                    public void onComplete(List<StoryAllParagraph> storyAllParagraphs) {
+                        setValue(storyAllParagraphs);
+
+                        mStoryRemoteDataSource.getAllStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+                            @Override
+                            public void onComplete(List<StoryAllParagraph> stories) {
+                                setValue(stories);
+                                mStoryLocalDataSource.saveStories(stories);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        mStoryRemoteDataSource.getAllStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+                            @Override
+                            public void onComplete(List<StoryAllParagraph> stories) {
+                                setValue(stories);
+                                mStoryLocalDataSource.saveStories(stories);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            protected void onInactive() {
+                super.onInactive();
+            }
+        };
+    }
+
+    public MutableLiveData<List<StoryAllParagraph>> getUserStoriesLiveData() {
+
+        return new MutableLiveData<List<StoryAllParagraph>>() {
+            @Override
+            protected void onActive() {
+                super.onActive();
+
+                mStoryLocalDataSource.getUserStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+
+                    @Override
+                    public void onComplete(List<StoryAllParagraph> storyAllParagraphs) {
+                        setValue(storyAllParagraphs);
+
+                        mStoryRemoteDataSource.getUserStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+                            @Override
+                            public void onComplete(List<StoryAllParagraph> stories) {
+                                setValue(stories);
+                                mStoryLocalDataSource.saveStories(stories);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        mStoryRemoteDataSource.getUserStories(new StoryDataSource.GetStoryCallback<List<StoryAllParagraph>>() {
+                            @Override
+                            public void onComplete(List<StoryAllParagraph> stories) {
+                                setValue(stories);
+                                mStoryLocalDataSource.saveStories(stories);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            protected void onInactive() {
+                super.onInactive();
+            }
+        };
+    }
+
 
     private Story getStoryWithId(@NonNull String id) {
-        if (mCachedStorys == null || mCachedStorys.isEmpty()) {
+        if (mCachedStories == null || mCachedStories.isEmpty()) {
             return null;
         } else {
-            return mCachedStorys.get(id);
+            return mCachedStories.get(id);
         }
     }
 

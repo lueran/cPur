@@ -1,0 +1,35 @@
+package com.cpur;
+
+import android.app.Application;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
+
+import com.cpur.data.StoryAllParagraph;
+import com.cpur.data.StoryRepository;
+
+import java.util.List;
+
+public class StoryListViewModel extends ViewModel {
+
+    private final StoryRepository storyRepo;
+
+    public StoryListViewModel(Application mApplication, StoryRepository storyRepository) {
+        this.storyRepo = storyRepository;
+    }
+
+    public LiveData<List<StoryAllParagraph>> getDiscoverStories() {
+        return storyRepo.getDiscoverStoriesLiveData();
+    }
+
+    public LiveData<List<StoryAllParagraph>> getUserStories() {
+        return storyRepo.getUserStoriesLiveData();
+    }
+
+    public LiveData<List<StoryAllParagraph>> getStories(int type) {
+        if (type == 0){
+            return getDiscoverStories();
+        }else{
+            return getUserStories();
+        }
+    }
+}

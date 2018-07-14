@@ -19,6 +19,8 @@ package com.cpur.data;
 import android.support.annotation.NonNull;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.List;
 
 /**
@@ -37,4 +39,14 @@ public interface StoryDataSource {
     void getStory(@NonNull String storyId, @NonNull GetStoryCallback<StoryAllParagraph> callback);
 
     void saveStory(@NonNull StoryAllParagraph story);
+
+    void getUserStories(@NonNull GetStoryCallback<List<StoryAllParagraph>> callback);
+
+    void getAllStories(@NonNull GetStoryCallback<List<StoryAllParagraph>> callback);
+
+    void saveStories(@NonNull List<StoryAllParagraph> stories);
+
+    default public String getUID(){
+        return FirebaseAuth.getInstance().getUid();
+    }
 }

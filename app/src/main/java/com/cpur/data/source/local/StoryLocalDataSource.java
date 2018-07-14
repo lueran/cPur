@@ -100,6 +100,62 @@ public class StoryLocalDataSource implements StoryDataSource {
         mAppExecutors.diskIO().execute(saveRunnable);
     }
 
+    @Override
+    public void getUserStories(@NonNull GetStoryCallback<List<StoryAllParagraph>> callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final List<StoryAllParagraph> stories = mStoryDao.userStories(getUID());
+                mAppExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (stories != null) {
+                            callback.onComplete(stories);
+                        } else {
+                            callback.onError();
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
+    public void getAllStories(@NonNull final GetStoryCallback<List<StoryAllParagraph>> callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final List<StoryAllParagraph> stories = mStoryDao.getStories();
+                mAppExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (stories != null) {
+                            callback.onComplete(stories);
+                        } else {
+                            callback.onError();
+                        }
+                    }
+                });
+            }
+        };
+
+        mAppExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public void saveStories(@NonNull final List<StoryAllParagraph> stories) {
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                for (StoryAllParagraph storyAllParagraph: stories) {
+                    mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(),storyAllParagraph.getParagraphs());
+                }
+            }
+        };
+        mAppExecutors.diskIO().execute(saveRunnable);
+    }
+
+
     @VisibleForTesting
     static void clearInstance() {
         INSTANCE = null;
