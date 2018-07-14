@@ -16,10 +16,6 @@ import android.view.ViewGroup;
 import com.StoryAdapter;
 import com.cpur.R;
 import com.cpur.StoryActivity;
-import com.cpur.models.Story;
-import com.cpur.viewholder.StoryViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.cpur.MainViewModel;
 import com.cpur.ViewModelFactory;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,9 +76,7 @@ public class StoryListFragment extends Fragment {
         mManager = new GridLayoutManager(getActivity(), 2);
         mRecycler.setLayoutManager(mManager);
 
-        mainViewModel.getStories(type).observe(this, (stories) ->{
-            mAdapter.setStories(stories);
-        });
+        mainViewModel.getStories(type).observe(this, (stories) -> mAdapter.setStories(stories));
 
         mAdapter.setListener(story -> {
             Intent intent = new Intent(getActivity(), StoryActivity.class);
@@ -92,7 +86,7 @@ public class StoryListFragment extends Fragment {
     }
 
     public String getUid() {
-        return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        return FirebaseAuth.getInstance().getUid();
     }
 
     @Override

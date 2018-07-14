@@ -24,15 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * Concrete implementation to load Storys from the data sources into a cache.
- * <p>
- * For simplicity, this implements a dumb synchronisation between locally persisted data and data
- * obtained from the server, by using the remote data source only if the local database doesn't
- * exist or is empty.
- * <p>
- * //TODO: Implement this class using LiveData.
- */
 public class StoryRepository {
 
     private volatile static StoryRepository INSTANCE = null;
@@ -40,17 +31,6 @@ public class StoryRepository {
     private final StoryDataSource mStoryRemoteDataSource;
 
     private final StoryDataSource mStoryLocalDataSource;
-
-    /**
-     * This variable has package local visibility so it can be accessed from tests.
-     */
-    Map<String, Story> mCachedStories;
-
-    /**
-     * Marks the cache as invalid, to force an update the next time data is requested. This variable
-     * has package local visibility so it can be accessed from tests.
-     */
-    private boolean mCacheIsDirty = false;
 
     // Prevent direct instantiation.
     private StoryRepository(@NonNull StoryDataSource tasksRemoteDataSource,
@@ -89,61 +69,7 @@ public class StoryRepository {
 
     public void saveStory(@NonNull StoryAllParagraph story) {
         mStoryRemoteDataSource.saveStory(story);
-
-        // Do in memory cache update to keep the app UI up to date
     }
-
-
-   /* @Override
-    public void getStory(@NonNull final String storyId, @NonNull final GetStoryCallback callback) {
-
-        Story cachedTask = getStoryWithId(storyId);
-
-        // Respond immediately with cache if available
-        if (cachedTask != null) {
-            callback.onStoryLoaded(cachedTask);
-            return;
-        }
-
-        // Is the task in the local data source? If not, query the network.
-        mStoryLocalDataSource.getStory(storyId, new GetStoryCallback() {
-            @Override
-            public void onStoryLoaded(Story story) {
-                // Do in memory cache update to keep the app UI up to date
-                if (mCachedStories == null) {
-                    mCachedStories = new LinkedHashMap<>();
-                }
-                mCachedStories.put(story.getUid(), story);
-
-                callback.onStoryLoaded(story);
-            }
-
-            @Override
-            public void onDataNotAvailable() {
-                mStoryRemoteDataSource.getStory(storyId, new GetStoryCallback() {
-                    @Override
-                    public void onStoryLoaded(Story story) {
-                        if (story == null) {
-                            onDataNotAvailable();
-                            return;
-                        }
-                        // Do in memory cache update to keep the app UI up to date
-                        if (mCachedStories == null) {
-                            mCachedStories = new LinkedHashMap<>();
-                        }
-                        mCachedStories.put(story.getUid(), story);
-
-                        callback.onStoryLoaded(story);
-                    }
-
-                    @Override
-                    public void onDataNotAvailable() {
-                        callback.onDataNotAvailable();
-                    }
-                });
-            }
-        });
-    }*/
 
     public LiveData<StoryAllParagraph> getStory(@NonNull final String storyId) {
 
@@ -268,7 +194,6 @@ public class StoryRepository {
                             @Override
                             public void onComplete(List<StoryAllParagraph> stories) {
                                 setValue(stories);
-//                                mStoryLocalDataSource.saveStories(stories); Don't Think we should save these maybe not updated
                             }
 
                             @Override
@@ -285,7 +210,6 @@ public class StoryRepository {
                             @Override
                             public void onComplete(List<StoryAllParagraph> stories) {
                                 setValue(stories);
-//                                mStoryLocalDataSource.saveStories(stories); Don't Think we should save these maybe not updated
                             }
 
                             @Override
@@ -302,15 +226,6 @@ public class StoryRepository {
                 super.onInactive();
             }
         };
-    }
-
-
-    private Story getStoryWithId(@NonNull String id) {
-        if (mCachedStories == null || mCachedStories.isEmpty()) {
-            return null;
-        } else {
-            return mCachedStories.get(id);
-        }
     }
 
     public void createStory(Story story, Paragraph paragraph) {

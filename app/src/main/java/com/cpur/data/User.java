@@ -11,16 +11,10 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.HashMap;
 
 @IgnoreExtraProperties
-@Entity
 public class User {
-    @ColumnInfo(name = "username")
     private String username;
-    @ColumnInfo(name = "email")
     private String email;
-    @PrimaryKey
-    @NonNull
     private String uid;
-    @Ignore
     private HashMap<String,Boolean> notificationToken;
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
