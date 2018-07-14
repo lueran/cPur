@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +12,7 @@ import android.view.ViewGroup;
 
 import com.cpur.R;
 import com.cpur.StoryActivity;
-import com.cpur.StoryDetailActivity;
 import com.cpur.models.Story;
-import com.cpur.viewholder.GlideApp;
 import com.cpur.viewholder.StoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -65,7 +62,7 @@ public abstract class StoryListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Set up Layout Manager, reverse layout
-        mManager = new GridLayoutManager(getActivity(),2);
+        mManager = new GridLayoutManager(getActivity(), 2);
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
@@ -100,61 +97,16 @@ public abstract class StoryListFragment extends Fragment {
                 });
 
                 // Determine if the current user has liked this story and set UI accordingly
-                // Bind Story to ViewHolder, setting OnClickListener for the star button
-                viewHolder.bindToPost(model, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View starView) {
-                        // Need to write to both places the story is stored
-                        DatabaseReference globalPostRef = mDatabase.child("stories").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-stories").child(model.getUid()).child(postRef.getKey());
-
-                        // Run two transactions
-                        onStarClicked(globalPostRef);
-                        onStarClicked(userPostRef);
-                    }
-                });
+                // Bind Story to ViewHolder
+                viewHolder.bindToStory(model);
             }
         };
         mRecycler.setAdapter(mAdapter);
     }
 
-    // [START post_stars_transaction]
-    private void onStarClicked(DatabaseReference postRef) {
-        postRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                Story s = mutableData.getValue(Story.class);
-                if (s == null) {
-                    return Transaction.success(mutableData);
-                }
-
-                // Set value and report transaction success
-                mutableData.setValue(s);
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b,
-                                   DataSnapshot dataSnapshot) {
-                // Transaction completed
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
-            }
-        });
-    }
-    // [END post_stars_transaction]
-
-
     @Override
-    public void onStart() {
-        super.onStart();
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if (mAdapter != null) {
             mAdapter.stopListening();
         }
@@ -169,7 +121,7 @@ public abstract class StoryListFragment extends Fragment {
     }
 
     public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return FirebaseAuth.getInstance().getUid();
     }
 
     public abstract Query getQuery(DatabaseReference databaseReference);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,22 +31,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private EditText mEmailField;
     private EditText mPasswordField;
-    private Button mSignInButton;
-    private Button mSignUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         // Views
         mEmailField = findViewById(R.id.email);
         mPasswordField = findViewById(R.id.password);
-        mSignInButton = findViewById(R.id.login);
-        mSignUpButton = findViewById(R.id.register);
+        Button mSignInButton = findViewById(R.id.login);
+        Button mSignUpButton = findViewById(R.id.register);
 
         // Click listeners
         mSignInButton.setOnClickListener(this);
@@ -132,7 +131,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // Write new user
         writeNewUser(user.getUid(), username, user.getEmail(), token);
 
-        // Go to CreateStoryActivity
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
     }

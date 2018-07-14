@@ -22,7 +22,6 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     private GlideRequests with;
     private ImageView coverImageView;
     private Resources resources;
-    private Drawable fallback;
     private TextView numOfPartOutOf;
 
 
@@ -36,18 +35,16 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
         with = GlideApp.with(itemView);
         resources = itemView.getResources();
-        fallback = itemView.getResources().getDrawable(R.drawable.logo);
-
     }
 
-    public void bindToPost(Story story, View.OnClickListener starClickListener) {
+    public void bindToStory(Story story) {
         String coverImageId = story.getCoverImage();
-        if (coverImageId == null){
+        if (coverImageId == null) {
             coverImageId = DEFAULT_IMG_URI;
         }
         Uri uri = Uri.parse(coverImageId);
-        if (uri != null){
-            with.load(coverImageId).fallback(fallback).into(coverImageView);
+        if (uri != null) {
+            with.load(coverImageId).placeholder(R.drawable.logo).error(R.drawable.logo).fallback(R.drawable.logo).into(coverImageView);
         }
         titleView.setText(story.getTitle());
 
@@ -60,18 +57,17 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         int numRounds = story.getNumRounds();
         String numRoundsString = String.valueOf(numRounds);
         String sizeString = String.valueOf(size);
-        switch (story.getCurrentStatus()){
+        switch (story.getCurrentStatus()) {
 
             case PENDING:
             case IN_PROGRESS:
                 int color;
-                if (size < minParticipants){
+                if (size < minParticipants) {
                     color = Color.parseColor("#edb138"); //Yellow
-                }
-                else if (size >= maxParticipants){
+                } else if (size >= maxParticipants) {
                     color = Color.parseColor("#ff0011"); //Red
 
-                }else{
+                } else {
                     color = Color.parseColor("#469c11"); //Green
                 }
 
@@ -89,12 +85,8 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
                 break;
             default:
                 statusImage.setColorFilter(0);
-               statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_join));
+                statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_join));
 
         }
     }
-
-// Download directly from StorageReference using Glide
-// (See MyAppGlideModule for Loader registration)
-
 }

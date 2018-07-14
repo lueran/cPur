@@ -4,20 +4,22 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
     private Intent startIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        auth = FirebaseAuth.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
         if (auth.getCurrentUser() != null) {
             startIntent = new Intent(this, MainActivity.class);
         } else {
@@ -29,6 +31,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startActivity(startIntent);
+                finish();
             }
 
         }, 1500);
