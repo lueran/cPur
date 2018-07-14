@@ -91,6 +91,12 @@ public class StoryListFragment extends Fragment {
         storyListViewModel.getStories(type).observe(this, (stories) ->{
             mAdapter.setStories(stories);
         });
+
+        mAdapter.setListener(story -> {
+            Intent intent = new Intent(getActivity(), StoryActivity.class);
+            intent.putExtra(StoryActivity.EXTRA_STORY_ID_KEY, story.getStory().getUid());
+            startActivity(intent);
+        });
     }
 
     public String getUid() {

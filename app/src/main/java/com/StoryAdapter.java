@@ -62,7 +62,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryViewHolder> {
             this.listener = listener;
         }
 
-        interface OnStoryClickListener {
+        public interface OnStoryClickListener {
             void onStoryClick(StoryAllParagraph story);
         }
 }
