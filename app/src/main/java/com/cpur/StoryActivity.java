@@ -32,7 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StoryActivity extends AppCompatActivity {
+public class StoryActivity extends BaseActivity {
 
     public static final String EXTRA_STORY_ID_KEY = "com.cpur.EXTRA_STORY_ID_KEY";
     private TextView previousContentTextView;

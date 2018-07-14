@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.StoryAdapter;
 import com.cpur.R;
 import com.cpur.StoryActivity;
 import com.cpur.MainViewModel;
