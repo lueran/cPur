@@ -32,11 +32,11 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
+                        currentPosition = holder.getAdapterPosition();
                         listener.onStoryClick(story);
                     }
                 }
             });
-            currentPosition = holder.getAdapterPosition();
             // Bind Story to ViewHolder
             holder.bindToStory(story);
         }

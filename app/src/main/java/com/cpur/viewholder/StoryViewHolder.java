@@ -25,7 +25,7 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     private RequestManager with;
     private ImageView coverImageView;
     private Resources resources;
-    private Drawable fallback;
+    private ImageView indication;
     private TextView numOfPartOutOf;
 
 
@@ -37,9 +37,9 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         coverImageView = itemView.findViewById(R.id.textViewBackground);
         statusImage = itemView.findViewById(R.id.statusImage);
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
+        //indication = itemView.findViewById(R.id.indication);
         with = Glide.with(itemView);
         resources = itemView.getResources();
-        fallback = itemView.getResources().getDrawable(R.drawable.logo);
 
     }
 
@@ -96,6 +96,14 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
                statusImage.setImageDrawable(resources.getDrawable(R.drawable.ic_join));
 
         }
+//        String uid = FirebaseAuth.getInstance().getUid();
+//        if (story.getAuthor().equals(uid)){
+//            indication.setImageDrawable(resources.getDrawable(R.drawable.ic_attachment_green_24dp));
+//        }else if (story.getParticipants().contains(uid)){
+//            indication.setImageDrawable(resources.getDrawable(R.drawable.ic_attachment_green_24dp));
+//        }else {
+//            indication.setVisibility(View.GONE);
+//        }
     }
 
 
