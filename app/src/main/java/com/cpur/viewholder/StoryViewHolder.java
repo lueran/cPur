@@ -37,7 +37,6 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         coverImageView = itemView.findViewById(R.id.textViewBackground);
         statusImage = itemView.findViewById(R.id.statusImage);
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
-
         with = Glide.with(itemView);
         resources = itemView.getResources();
         fallback = itemView.getResources().getDrawable(R.drawable.logo);
@@ -98,5 +97,8 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
 
         }
     }
+
+
+
 
 }

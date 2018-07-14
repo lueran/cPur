@@ -1,6 +1,5 @@
 package com;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryViewHolder> {
 
         private List<StoryAllParagraph> stories = new ArrayList<>();
         private OnStoryClickListener listener;
+        private int currentPosition;
 
     @NonNull
         @Override
@@ -36,6 +36,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryViewHolder> {
                     }
                 }
             });
+            currentPosition = holder.getAdapterPosition();
             // Bind Story to ViewHolder
             holder.bindToStory(story);
         }
@@ -64,6 +65,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryViewHolder> {
 
         public interface OnStoryClickListener {
             void onStoryClick(StoryAllParagraph story);
+        }
+
+        public int getCurrentPosition(){
+            return currentPosition;
         }
 }
 

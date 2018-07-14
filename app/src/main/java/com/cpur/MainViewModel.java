@@ -9,11 +9,11 @@ import com.cpur.data.StoryRepository;
 
 import java.util.List;
 
-public class StoryListViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
 
     private final StoryRepository storyRepo;
 
-    public StoryListViewModel(Application mApplication, StoryRepository storyRepository) {
+    public MainViewModel(Application mApplication, StoryRepository storyRepository) {
         this.storyRepo = storyRepository;
     }
 
