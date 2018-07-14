@@ -9,8 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.cpur.R;
-import com.cpur.models.Story;
+import com.cpur.data.Story;
+import com.cpur.data.StoryAllParagraph;
 
 public class StoryViewHolder extends RecyclerView.ViewHolder {
 
@@ -19,9 +22,10 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
     private ImageView statusImage;
     private ImageView clapsImage;
     private TextView numClapsView;
-    private GlideRequests with;
+    private RequestManager with;
     private ImageView coverImageView;
     private Resources resources;
+    private ImageView indication;
     private TextView numOfPartOutOf;
 
 
@@ -33,16 +37,21 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
         coverImageView = itemView.findViewById(R.id.textViewBackground);
         statusImage = itemView.findViewById(R.id.statusImage);
         numOfPartOutOf = itemView.findViewById(R.id.numOfPathOutOf);
-        with = GlideApp.with(itemView);
+        //indication = itemView.findViewById(R.id.indication);
+        with = Glide.with(itemView);
         resources = itemView.getResources();
+
     }
 
-    public void bindToStory(Story story) {
+    public void bindToStory(StoryAllParagraph storyAllParagraph) {
+        Story story = storyAllParagraph.getStory();
         String coverImageId = story.getCoverImage();
         if (coverImageId == null) {
             coverImageId = DEFAULT_IMG_URI;
         }
         Uri uri = Uri.parse(coverImageId);
+        if (uri != null){
+            with.load(coverImageId).into(coverImageView);
         if (uri != null) {
             with.load(coverImageId).placeholder(R.drawable.logo).error(R.drawable.logo).fallback(R.drawable.logo).into(coverImageView);
         }
@@ -89,4 +98,8 @@ public class StoryViewHolder extends RecyclerView.ViewHolder {
 
         }
     }
+
+
+
+
 }

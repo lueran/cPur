@@ -1,15 +1,19 @@
-package com.cpur.models;
+package com.cpur.data;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ServerValue;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @IgnoreExtraProperties
-public class Story extends BaseModel {
+@Entity
+public class Story {
 
     public enum Status {
 
@@ -31,13 +35,14 @@ public class Story extends BaseModel {
 
     private String title;
     private String author;
-    private List<Paragraph> content;
     private String coverImage;
     private int minParticipants = 3;
     private int maxParticipants;
     private int numRounds;
     private List<String> participants;
     private int claps;
+    @PrimaryKey
+    @NonNull
     private String uid;
     private int turn = 1;
     private Status currentStatus = Status.PENDING;
@@ -45,10 +50,9 @@ public class Story extends BaseModel {
     public Story() {
     }
 
-    public Story(String author, String title, List<Paragraph> content, String coverImage, int maxParticipants, int numRounds, List<String> participants) {
+    public Story(String author, String title, String coverImage, int maxParticipants, int numRounds, List<String> participants) {
         this.title = title;
         this.author = author;
-        this.content = content;
         this.coverImage = coverImage;
         this.maxParticipants = maxParticipants;
         this.numRounds = numRounds;
@@ -69,14 +73,6 @@ public class Story extends BaseModel {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public List<Paragraph> getContent() {
-        return content;
-    }
-
-    public void setContent(List<Paragraph> content) {
-        this.content = content;
     }
 
     public String getCoverImage() {
@@ -152,7 +148,7 @@ public class Story extends BaseModel {
     }
 
     @Exclude
-    public String getNextTurnUID(){
+    public String getNextTurnUID() {
         int nextTurnIndex = this.turn % this.participants.size();
         return this.participants.get(nextTurnIndex);
     }
