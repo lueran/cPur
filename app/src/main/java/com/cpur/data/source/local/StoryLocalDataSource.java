@@ -16,7 +16,6 @@
 
 package com.cpur.data.source.local;
 
-import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -105,7 +104,7 @@ public class StoryLocalDataSource implements StoryDataSource {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                String search = String.format("%%s%%",getUID());
+                String search = String.format("%%%s%%",getUID());
                 final List<StoryAllParagraph> stories = mStoryDao.getUserStories(search);
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override

@@ -10,13 +10,10 @@ import com.cpur.data.Paragraph;
 import com.cpur.data.ParagraphDao;
 import com.cpur.data.Story;
 import com.cpur.data.StoryDao;
-import com.cpur.data.User;
-import com.cpur.data.UserDao;
 
-@Database(entities = {User.class, Story.class, Paragraph.class}, version = 1)
+@Database(entities = {Story.class, Paragraph.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
     public abstract StoryDao storyDao();
     public abstract ParagraphDao paragraphDao();
 

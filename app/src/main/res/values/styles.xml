@@ -14,7 +14,7 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@android:color/black</item>
         <item name="android:textViewStyle">@style/TypeWriterTextStyle</item>
         <item name="colorButtonNormal">@color/colorPrimaryDark</item>
     </style>

@@ -47,29 +47,31 @@ public class StoryRemoteDataSource implements StoryDataSource {
     @Override
     public void saveStory(@NonNull StoryAllParagraph storyAllParagraph) {
         String key = storyAllParagraph.getStory().getUid();
-        if (key == null){
+        if (key == null) {
             key = storyDatabaseReference.child("new-stories").push().getKey();
         }
         storyAllParagraph.getStory().setUid(key);
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/new-stories/" + key, storyAllParagraph);
-        String uid = FirebaseAuth.getInstance().getUid();
-        if (storyAllParagraph.getStory().getParticipants().contains(uid)) {
+        for (String uid : storyAllParagraph.getStory().getParticipants()) {
             childUpdates.put("/new-user-stories/" + uid + "/" + key, storyAllParagraph);
         }
         storyDatabaseReference.updateChildren(childUpdates);
     }
 
     @Override
-    public void getUserStories(@NonNull GetStoryCallback<List<StoryAllParagraph>> callback) {
+    public void getUserStories(@NonNull final GetStoryCallback<List<StoryAllParagraph>> callback) {
         Query recentStoriesQuery = storyDatabaseReference.child("new-user-stories").child(getUID()).limitToLast(100);
         recentStoriesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String, StoryAllParagraph>> genericTypeIndicator = new GenericTypeIndicator<Map<String, StoryAllParagraph>>() {};
+                GenericTypeIndicator<Map<String, StoryAllParagraph>> genericTypeIndicator = new GenericTypeIndicator<Map<String, StoryAllParagraph>>() {
+                };
                 Map<String, StoryAllParagraph> stringStoryAllParagraphMap = dataSnapshot.getValue(genericTypeIndicator);
-                Collection<StoryAllParagraph> values = Objects.requireNonNull(stringStoryAllParagraphMap).values();
-                callback.onComplete(new ArrayList<>(values));
+                if (stringStoryAllParagraphMap != null) {
+                    Collection<StoryAllParagraph> values = stringStoryAllParagraphMap.values();
+                    callback.onComplete(new ArrayList<>(values));
+                }
             }
 
             @Override
@@ -80,15 +82,18 @@ public class StoryRemoteDataSource implements StoryDataSource {
     }
 
     @Override
-    public void getAllStories(@NonNull GetStoryCallback<List<StoryAllParagraph>> callback) {
+    public void getAllStories(@NonNull final GetStoryCallback<List<StoryAllParagraph>> callback) {
         Query recentStoriesQuery = storyDatabaseReference.child("new-stories").limitToLast(100);
         recentStoriesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String, StoryAllParagraph>> genericTypeIndicator = new GenericTypeIndicator<Map<String, StoryAllParagraph>>() {};
+                GenericTypeIndicator<Map<String, StoryAllParagraph>> genericTypeIndicator = new GenericTypeIndicator<Map<String, StoryAllParagraph>>() {
+                };
                 Map<String, StoryAllParagraph> stringStoryAllParagraphMap = dataSnapshot.getValue(genericTypeIndicator);
-                Collection<StoryAllParagraph> values = Objects.requireNonNull(stringStoryAllParagraphMap).values();
-                callback.onComplete(new ArrayList<>(values));
+                if (stringStoryAllParagraphMap != null) {
+                    Collection<StoryAllParagraph> values = stringStoryAllParagraphMap.values();
+                    callback.onComplete(new ArrayList<>(values));
+                }
             }
 
             @Override

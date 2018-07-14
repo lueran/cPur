@@ -76,9 +76,7 @@ public class StoryListFragment extends Fragment {
         mManager = new GridLayoutManager(getActivity(), 2);
         mRecycler.setLayoutManager(mManager);
 
-        mainViewModel.getStories(type).observe(this, (stories) ->{
-            mAdapter.setStories(stories);
-        });
+        mainViewModel.getStories(type).observe(this, (stories) -> mAdapter.setStories(stories));
 
         mAdapter.setListener(story -> {
             Intent intent = new Intent(getActivity(), StoryActivity.class);
@@ -88,7 +86,7 @@ public class StoryListFragment extends Fragment {
     }
 
     public String getUid() {
-        return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        return FirebaseAuth.getInstance().getUid();
     }
 
     @Override
