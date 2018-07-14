@@ -129,7 +129,10 @@ public class StoryActivity extends AppCompatActivity {
                         showMyTurn(prevContent);
                     } else {
                         if (isMyContent) {
+                            previousContentTextView.setVisibility(View.VISIBLE);
                             previousContentTextView.setText(prevContent);
+                        } else {
+                            previousContentTextView.setVisibility(View.GONE);
                         }
                         showBuzzUser(story);
                     }
@@ -156,6 +159,7 @@ public class StoryActivity extends AppCompatActivity {
                     colors[paragraphAt % story.getStory().getParticipants().size()])), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
+        previousContentTextView.setVisibility(View.VISIBLE);
         previousContentTextView.setText(fullStory);
         nextContentEditText.setVisibility(View.GONE);
         infoMessageTextView.setVisibility(View.GONE);
@@ -193,7 +197,9 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     private void showMyTurn(String prevContent) {
+        previousContentTextView.setVisibility(View.VISIBLE);
         previousContentTextView.setText(prevContent);
+        infoMessageTextView.setVisibility(View.GONE);
         nextLayout.setVisibility(View.VISIBLE);
         nextContentEditText.setHint(R.string.continue_the_story_here);
         actionButton.setVisibility(View.VISIBLE);
