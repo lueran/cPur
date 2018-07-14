@@ -1,5 +1,4 @@
 # weTales
 
 # Authors
-Eran Lunenfeld
-Tal Machani
+## Eran Lunenfeld & Tal Machani
