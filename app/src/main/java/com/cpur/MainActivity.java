@@ -1,100 +1,86 @@
 package com.cpur;
 
-
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
-import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
-
-import com.cpur.models.Paragraph;
-import com.cpur.models.Story;
+import com.cpur.fragment.StoryListFragment;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.ArrayList;
+public class MainActivity extends BaseActivity {
+        private static final String TAG = "MainActivity";
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+        private FragmentPagerAdapter mPagerAdapter;
+        private ViewPager mViewPager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-        SeekBar sbNumParticipants = findViewById(R.id.numParticipants);
-        SeekBar sbNumRounds = findViewById(R.id.numRounds);
-        final TextView tvNumParticipantsValue = findViewById(R.id.numParticipantsValue);
-        final TextView tvNumRoundsValue = findViewById(R.id.numRoundsValue);
-        final EditText name = findViewById(R.id.name);
-        final EditText s1 = findViewById(R.id.sentence1);
-        final EditText s2 = findViewById(R.id.sentence2);
-        final Button createButton = findViewById(R.id.create);
+           String notificationToken = FirebaseInstanceId.getInstance().getToken();
 
+            // Create the adapter that will return a fragment for each section
+            mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+                private final Fragment[] mFragments = new Fragment[] {
+                        StoryListFragment.newInstance(0),
+                        StoryListFragment.newInstance(1)
+                };
+                private final String[] mFragmentNames = new String[] {
+                        getString(R.string.discover),
+                        getString(R.string.heading_my_stories),
+                };
+                @Override
+                public Fragment getItem(int position) {
+                    return mFragments[position];
+                }
+                @Override
+                public int getCount() {
+                    return mFragments.length;
+                }
+                @Override
+                public CharSequence getPageTitle(int position) {
+                    return mFragmentNames[position];
+                }
+            };
+            // Set up the ViewPager with the sections adapter.
+            mViewPager = findViewById(R.id.container);
+            mViewPager.setAdapter(mPagerAdapter);
+            TabLayout tabLayout = findViewById(R.id.tabs);
+            tabLayout.setupWithViewPager(mViewPager);
 
-        sbNumRounds.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvNumRoundsValue.setText(String.valueOf(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                tvNumRoundsValue.setText(String.valueOf(seekBar.getProgress()));
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                tvNumRoundsValue.setText(String.valueOf(seekBar.getProgress()));
-            }
-        });
-
-        sbNumParticipants.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvNumParticipantsValue.setText(String.valueOf((progress)));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                tvNumParticipantsValue.setText(String.valueOf(seekBar.getProgress()));
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                tvNumParticipantsValue.setText(String.valueOf(seekBar.getProgress()));
-            }
-        });
-
-        createButton.setOnClickListener(new View.OnClickListener() {
+        // Button launches NewStoryActivity
+        findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createStory(s1, s2, name);
+                startActivity(new Intent(MainActivity.this, CreateStoryActivity.class));
             }
         });
     }
 
-    private void createStory(EditText s1, EditText s2, EditText name) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        ArrayList<Paragraph> paragraphs = new ArrayList<>();
-        Paragraph paragraph = new Paragraph();
-        paragraph.setS1(s1.getText().toString());
-        paragraph.setS2(s2.getText().toString());
-        paragraph.setAuthorId(uid);
-        paragraphs.add(paragraph);
-        Story story = new Story();
-        story.setOwnerId(uid);
-        story.setContent(paragraphs);
-        story.setTitle(name.getText().toString());
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("story");
-        myRef.child(uid).setValue(story);
-        startActivity(new Intent(MainActivity.this, MyStoriesActivity.class));
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }

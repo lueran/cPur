@@ -6,6 +6,46 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textViewStyle">@style/TypeWriterTextStyle</item>
+        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="android:textViewStyle">@style/TypeWriterTextStyle</item>
+        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
+    </style>
+    <style name="Login.Button" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/type_writer_font</item>
+
+    </style>
+    <style name="Register.Button" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="android:fontFamily">@font/type_writer_font</item>
+
     </style>
 
+    <style name="AppTheme.StoryActivityStyle">
+        <item name="android:background">@drawable/lined_paper</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="BackGroundImageView">
+        <item name="android:alpha">0.5</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/logo</item>
+    </style>
+
+    <style name="TypeWriterTextStyle">
+        <item name="android:fontFamily">@font/type_writer_font</item>
+    </style>
 </resources>
