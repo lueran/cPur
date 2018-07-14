@@ -26,8 +26,6 @@ import java.util.UUID;
 public class CreateStoryViewModel extends ViewModel {
     private static final String TAG = "StoryViewModel";
     private String userId;
-    // Initialize Database
-//    private DatabaseReference databaseReference;
     private StoryRepository storyRepo;
 
     public CreateStoryViewModel(Application mApplication, StoryRepository storyRepository) {
@@ -45,11 +43,9 @@ public class CreateStoryViewModel extends ViewModel {
 
     public void start() {
         userId = FirebaseAuth.getInstance().getUid();
-//        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     public void writeNewStory(String title, String imageId, String body, int numParticipantsValue, int numRoundsValue) {
-//        String key = databaseReference.child("stories").push().getKey();
         List<String> participants = new ArrayList<>();
         participants.add(userId);
         List<Paragraph> paragraphList = new ArrayList<>();
@@ -59,13 +55,6 @@ public class CreateStoryViewModel extends ViewModel {
         StoryAllParagraph storyAllParagraph = new StoryAllParagraph();
         storyAllParagraph.setStory(story);
         storyAllParagraph.setParagraphs(paragraphList);
-//        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("/stories/" + key, story);
-//        childUpdates.put("/user-stories/" + userId + "/" + key, story);
-//        databaseReference.updateChildren(childUpdates);
-
-//        storyRepo.saveStory(storyAllParagraph);
         storyRepo.createStory(story, paragraph);
-//        StoryLocalDataSource.getInstance(new AppExecutors(), AppDatabase.getInstance(context).storyDao())
     }
 }

@@ -268,7 +268,7 @@ public class StoryRepository {
                             @Override
                             public void onComplete(List<StoryAllParagraph> stories) {
                                 setValue(stories);
-                                mStoryLocalDataSource.saveStories(stories);
+//                                mStoryLocalDataSource.saveStories(stories); Don't Think we should save these maybe not updated
                             }
 
                             @Override
@@ -285,7 +285,7 @@ public class StoryRepository {
                             @Override
                             public void onComplete(List<StoryAllParagraph> stories) {
                                 setValue(stories);
-                                mStoryLocalDataSource.saveStories(stories);
+//                                mStoryLocalDataSource.saveStories(stories); Don't Think we should save these maybe not updated
                             }
 
                             @Override

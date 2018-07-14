@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,22 +17,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class CreateStoryActivity extends BaseActivity {
-    private static final String TAG = "CreateStoryActivity";
     private static final String REQUIRED = "Required";
     private static final String DEFAULT_IMG_URI = "https://firebasestorage.googleapis.com/v0/b/cpur-1ad2a.appspot.com/o/images%2Fpizza_monster.png?alt=media&token=ef5d90e7-639c-46ae-a7e3-89df0fa6b52b";
     private static int GET_FROM_GALLERY = 3;
@@ -75,18 +67,8 @@ public class CreateStoryActivity extends BaseActivity {
         uploadProgressDialog.setTitle("Uploading...");
 
 
-        coverImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-            }
-        });
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitStory();
-            }
-        });
+        coverImageView.setOnClickListener(v -> chooseImage());
+        submitButton.setOnClickListener(v -> submitStory());
     }
 
     private void chooseImage() {
@@ -159,33 +141,19 @@ public class CreateStoryActivity extends BaseActivity {
             String imageUUID = UUID.randomUUID().toString();
             final StorageReference filepath = storageReference.child("images/" + imageUUID);
             filepath.putFile(coverImageUri).addOnProgressListener(
-                    new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            uploadProgressDialog.setMessage("Uploaded " + progress + "%");
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            imageId = uri.toString();
-                            uploadProgressDialog.dismiss();
-                            Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
-                            //Do what you want with the url
-                        }
+                    taskSnapshot -> {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        uploadProgressDialog.setMessage("Uploaded " + progress + "%");
+                    }).addOnSuccessListener(taskSnapshot -> filepath.getDownloadUrl().addOnSuccessListener(uri -> {
+                        imageId = uri.toString();
+                        uploadProgressDialog.dismiss();
+                        Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
+                        //Do what you want with the url
+                    })).addOnFailureListener(e -> {
+                        imageId = DEFAULT_IMG_URI;
+                        uploadProgressDialog.dismiss();
+                        Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
                     });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    imageId = DEFAULT_IMG_URI;
-                    uploadProgressDialog.dismiss();
-                    Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
-                }
-            });
         }
     }
 
@@ -196,16 +164,10 @@ public class CreateStoryActivity extends BaseActivity {
         if (requestCode == GET_FROM_GALLERY && resultCode == RESULT_OK && data != null
                 && data.getData() != null) {
             coverImageUri = data.getData();
-
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), coverImageUri);
-                coverImageView.setImageBitmap(bitmap);
-                setEditingEnabled(false);
-                uploadImage();
-                setEditingEnabled(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Glide.with(this).load(coverImageUri).into(coverImageView);
+            setEditingEnabled(false);
+            uploadImage();
+            setEditingEnabled(true);
         }
     }
 

@@ -13,27 +13,22 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface StoryDao {
-    @Query("SELECT * FROM story")
+    @Query("SELECT * FROM Story")
     LiveData<List<Story>> getAll();
 
-    @Query("SELECT * FROM story WHERE uid = (:storyId)")
-    Story loadStoryById(String storyId);
+    @Transaction
+    @Query("SELECT * FROM Story WHERE participants LIKE :search")
+    List<StoryAllParagraph> getUserStories(String search);
 
-    @Query("SELECT * FROM story WHERE participants LIKE :uid")
-    List<StoryAllParagraph> userStories(String uid);
-
-    @Query("SELECT * FROM story WHERE uid = (:storyId)")
+    @Query("SELECT * FROM Story WHERE uid = (:storyId)")
     LiveData<Story> getStoryById(String storyId);
-
-    @Insert(onConflict = REPLACE)
-    void insertAll(Story... stories);
 
     @Transaction
     @Query("SELECT * FROM Story")
     List<StoryAllParagraph> getStories();
 
     @Transaction
-    @Query("SELECT * FROM story WHERE uid = (:storyId)")
+    @Query("SELECT * FROM Story WHERE uid = (:storyId)")
     StoryAllParagraph loadStoryAllParagraphById(String storyId);
 
     @Transaction

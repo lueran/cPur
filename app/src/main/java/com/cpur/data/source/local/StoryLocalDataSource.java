@@ -105,7 +105,8 @@ public class StoryLocalDataSource implements StoryDataSource {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final List<StoryAllParagraph> stories = mStoryDao.userStories(getUID());
+                String search = String.format("%%s%%",getUID());
+                final List<StoryAllParagraph> stories = mStoryDao.getUserStories(search);
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -118,6 +119,8 @@ public class StoryLocalDataSource implements StoryDataSource {
                 });
             }
         };
+
+        mAppExecutors.diskIO().execute(runnable);
     }
 
     @Override
