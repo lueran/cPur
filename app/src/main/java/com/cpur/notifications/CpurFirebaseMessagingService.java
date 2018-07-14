@@ -1,4 +1,4 @@
-package com.cpur.db;
+package com.cpur.notifications;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

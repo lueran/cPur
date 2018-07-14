@@ -48,7 +48,7 @@ public class StoryLocalDataSource implements StoryDataSource {
     }
 
     public static StoryLocalDataSource getInstance(@NonNull AppExecutors appExecutors,
-            @NonNull StoryDao storyDao) {
+                                                   @NonNull StoryDao storyDao) {
         if (INSTANCE == null) {
             synchronized (StoryLocalDataSource.class) {
                 if (INSTANCE == null) {
@@ -93,7 +93,7 @@ public class StoryLocalDataSource implements StoryDataSource {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
-                mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(),storyAllParagraph.getParagraphs());
+                mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(), storyAllParagraph.getParagraphs());
             }
         };
         mAppExecutors.diskIO().execute(saveRunnable);
@@ -104,7 +104,7 @@ public class StoryLocalDataSource implements StoryDataSource {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                String search = String.format("%%%s%%",getUID());
+                String search = String.format("%%%s%%", getUID());
                 final List<StoryAllParagraph> stories = mStoryDao.getUserStories(search);
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override
@@ -149,8 +149,8 @@ public class StoryLocalDataSource implements StoryDataSource {
         Runnable saveRunnable = new Runnable() {
             @Override
             public void run() {
-                for (StoryAllParagraph storyAllParagraph: stories) {
-                    mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(),storyAllParagraph.getParagraphs());
+                for (StoryAllParagraph storyAllParagraph : stories) {
+                    mStoryDao.insertAllStoriesParagraphs(storyAllParagraph.getStory(), storyAllParagraph.getParagraphs());
                 }
             }
         };

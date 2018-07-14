@@ -1,10 +1,12 @@
 package com.cpur;
 
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import com.cpur.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,12 +48,38 @@ public class LoginViewModel extends ViewModel {
 
     public void signIn(String email, String password, OnCompleteListener<AuthResult> listener) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(listener);
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = task.getResult().getUser();
+                            if (user != null && user.getEmail() != null) {
+                                String username = usernameFromEmail(user.getEmail());
+                                // Write new user
+                                writeNewUser(user.getUid(), username, user.getEmail());
+                            }
+                        }
+                        listener.onComplete(task);
+                    }
+                });
     }
 
     public void signUp(String email, String password, OnCompleteListener<AuthResult> listener , OnFailureListener failureListener) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(listener)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = task.getResult().getUser();
+                            if (user != null && user.getEmail() != null) {
+                                String username = usernameFromEmail(user.getEmail());
+                                // Write new user
+                                writeNewUser(user.getUid(), username, user.getEmail());
+                            }
+                        }
+                        listener.onComplete(task);
+                    }
+                })
                 .addOnFailureListener(failureListener);
     }
 

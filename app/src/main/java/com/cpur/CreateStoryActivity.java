@@ -142,18 +142,18 @@ public class CreateStoryActivity extends BaseActivity {
             final StorageReference filepath = storageReference.child("images/" + imageUUID);
             filepath.putFile(coverImageUri).addOnProgressListener(
                     taskSnapshot -> {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        int progress = (int) (100.0 * ((float) taskSnapshot.getBytesTransferred() / ((float) taskSnapshot.getTotalByteCount())));
                         uploadProgressDialog.setMessage("Uploaded " + progress + "%");
                     }).addOnSuccessListener(taskSnapshot -> filepath.getDownloadUrl().addOnSuccessListener(uri -> {
-                        imageId = uri.toString();
-                        uploadProgressDialog.dismiss();
-                        Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
-                        //Do what you want with the url
-                    })).addOnFailureListener(e -> {
-                        imageId = DEFAULT_IMG_URI;
-                        uploadProgressDialog.dismiss();
-                        Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
-                    });
+                imageId = uri.toString();
+                uploadProgressDialog.dismiss();
+                Toast.makeText(CreateStoryActivity.this, "Uploading Finished!", Toast.LENGTH_LONG).show();
+                //Do what you want with the url
+            })).addOnFailureListener(e -> {
+                imageId = DEFAULT_IMG_URI;
+                uploadProgressDialog.dismiss();
+                Toast.makeText(CreateStoryActivity.this, "Uploading Failed!", Toast.LENGTH_LONG).show();
+            });
         }
     }
 

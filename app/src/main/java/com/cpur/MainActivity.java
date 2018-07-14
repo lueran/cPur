@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.cpur.fragment.StoryListFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";
@@ -24,6 +25,7 @@ public class MainActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
+           String notificationToken = FirebaseInstanceId.getInstance().getToken();
 
             // Create the adapter that will return a fragment for each section
             mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {

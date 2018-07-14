@@ -45,6 +45,8 @@
     <string name="buzz_format">Buzz %s</string>
     <string name="discover">Discover</string>
     <string name="slogan">Cooperative Fiction</string>
+    <string name="story_is_full">The story is in progress and full of participants</string>
+    <string name="story_buzz">Waiting for next user to response</string>
     <plurals name="minimum_par_to_start">
         <item quantity="one">Need minimum %d more user to start</item>
         <item quantity="other">Need minimum %d more users to start</item>

@@ -80,7 +80,6 @@ public class StoryActivity extends AppCompatActivity {
             throw new IllegalArgumentException("Must pass EXTRA_STORY_ID_KEY");
         }
 
-        // Initialize Database
         storyViewModel.start(storyId);
 
         storyViewModel.getStory().observe(this, new Observer<StoryAllParagraph>() {
@@ -105,13 +104,13 @@ public class StoryActivity extends AppCompatActivity {
         }
         Story story = storyAllParagraph.getStory();
         String storyTitle = story.getTitle();
-//        setTitle(storyTitle);
         storyTitleTextView.setText(storyTitle);
         storyTitleTextView.setPaintFlags(storyTitleTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         String prevContent = String.format("%s %s", getString(R.string.previous_content), sentence.toString());
         boolean isParticipants = storyViewModel.isParticipants();
         boolean isMyTurn = storyViewModel.isMyTurn();
         boolean isMyContent = storyViewModel.isMyContent();
+        boolean isFull = storyViewModel.isFull();
 
         switch (story.getCurrentStatus()) {
 
@@ -134,8 +133,10 @@ public class StoryActivity extends AppCompatActivity {
                         }
                         showBuzzUser(story);
                     }
-                } else {
+                } else if (!isFull){
                     showJoin();
+                } else {
+                    showIsFull();
                 }
             }
             break;
@@ -157,6 +158,7 @@ public class StoryActivity extends AppCompatActivity {
 
         previousContentTextView.setText(fullStory);
         nextContentEditText.setVisibility(View.GONE);
+        infoMessageTextView.setVisibility(View.GONE);
         nextLayout.setVisibility(View.GONE);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.clap)));
@@ -174,8 +176,8 @@ public class StoryActivity extends AppCompatActivity {
 
     private void showBuzzUser(final Story story) {
         nextLayout.setVisibility(View.GONE);
-        infoMessageTextView.setEnabled(false);
-        infoMessageTextView.setText("Waiting for next user to response");
+        infoMessageTextView.setVisibility(View.VISIBLE);
+        infoMessageTextView.setText(R.string.story_buzz);
         actionButton.setEnabled(true);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.buzz)));
@@ -192,13 +194,13 @@ public class StoryActivity extends AppCompatActivity {
 
     private void showMyTurn(String prevContent) {
         previousContentTextView.setText(prevContent);
+        nextLayout.setVisibility(View.VISIBLE);
         nextContentEditText.setHint(R.string.continue_the_story_here);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(false);
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.send)));
         actionButton.setRippleColor(getResources().getColor(R.color.send_light));
         actionButton.setImageResource(R.drawable.ic_send_black_24dp);
-        nextContentEditText.setVisibility(View.VISIBLE);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,17 +229,14 @@ public class StoryActivity extends AppCompatActivity {
 
     private void showWaitingForMore(Story story) {
         actionButton.setVisibility(View.GONE);
-        infoMessageTextView.setVisibility(View.GONE);
-        nextContentEditText.setVisibility(View.VISIBLE);
-        nextLayout.setVisibility(View.VISIBLE);
+        infoMessageTextView.setVisibility(View.VISIBLE);
+        nextLayout.setVisibility(View.GONE);
         int quantity = story.getMinParticipants() - story.getParticipants().size();
-        nextContentEditText.setHint(getResources().getQuantityString(R.plurals.minimum_par_to_start,
+        infoMessageTextView.setText(getResources().getQuantityString(R.plurals.minimum_par_to_start,
                 quantity, quantity));
-        nextContentEditText.setEnabled(false);
     }
 
     private void showJoin() {
-        nextContentEditText.setVisibility(View.GONE);
         nextLayout.setVisibility(View.GONE);
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.join)));
@@ -250,6 +249,13 @@ public class StoryActivity extends AppCompatActivity {
                 Snackbar.make(v, "You Joined " + storyTitleTextView.getText().toString(), Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void showIsFull() {
+        nextLayout.setVisibility(View.GONE);
+        actionButton.setVisibility(View.GONE);
+        infoMessageTextView.setVisibility(View.VISIBLE);
+        infoMessageTextView.setText(R.string.story_is_full);
     }
 
     private void buzzNextUser(Story story) {

@@ -36,12 +36,12 @@
             android:name=".StoryActivity"
             android:windowSoftInputMode="adjustPan"></activity>
 
-        <service android:name="com.cpur.db.CpurFirebaseMessagingService">
+        <service android:name="com.cpur.notifications.CpurFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".db.CpurFirebaseInstanceIDService">
+        <service android:name=".notifications.CpurFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

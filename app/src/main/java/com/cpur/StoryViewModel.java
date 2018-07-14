@@ -102,22 +102,14 @@ public class StoryViewModel extends ViewModel {
         return story != null && story.getParagraphs().get(story.getParagraphs().size() - 1).getAuthorId().equals(uid);
     }
 
-   /* private ValueEventListener storyListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            // Get Story object and use the values to update the UI
-            Story story = dataSnapshot.getValue(Story.class);
-            storyLiveData.setValue(story);
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            // Getting Story failed, log a message
-            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-        }
-    };*/
+    public boolean isFull() {
+        StoryAllParagraph story = storyLiveData.getValue();
+        return story != null && story.getStory().getParticipants().size() == story.getStory().getMaxParticipants();
+    }
 
     public String getUID() {
         return uid;
     }
+
+
 }
