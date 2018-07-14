@@ -205,7 +205,7 @@ public class StoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 storyViewModel.sendContent(nextContentEditText.getText().toString(), storyId);
-                Snackbar.make(v, "Published" + storyTitleTextView.getText().toString(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, "Published " + storyTitleTextView.getText().toString(), Snackbar.LENGTH_LONG).show();
 
             }
         });
