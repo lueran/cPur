@@ -17,7 +17,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         auth = FirebaseAuth.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         if (auth.getCurrentUser() != null) {
             startIntent = new Intent(this, MainActivity.class);
         } else {
@@ -29,9 +28,10 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startActivity(startIntent);
+                finish();
             }
 
-        }, 1500);
+        }, 1000);
 
     }
 }

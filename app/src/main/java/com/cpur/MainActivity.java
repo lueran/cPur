@@ -10,10 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.cpur.fragment.DiscoverStoriesFragment;
-import com.cpur.fragment.MyStoryFragment;
+import com.cpur.fragment.StoryListFragment;
 import com.google.firebase.auth.FirebaseAuth;
-
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";
@@ -30,8 +28,8 @@ public class MainActivity extends BaseActivity {
             // Create the adapter that will return a fragment for each section
             mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
                 private final Fragment[] mFragments = new Fragment[] {
-                        new DiscoverStoriesFragment(),
-                        new MyStoryFragment()
+                        StoryListFragment.newInstance(0),
+                        StoryListFragment.newInstance(1)
                 };
                 private final String[] mFragmentNames = new String[] {
                         getString(R.string.discover),

@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cpur.models.User;
+import com.cpur.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -25,27 +25,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private static final String TAG = "LoginActivity";
 
-    private DatabaseReference mDatabase;
-    private FirebaseAuth mAuth;
-
     private EditText mEmailField;
     private EditText mPasswordField;
     private Button mSignInButton;
     private Button mSignUpButton;
-
+    private LoginViewModel loginViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
+        loginViewModel = ViewModelFactory.getInstance().create(LoginViewModel.class);
 
         // Views
         mEmailField = findViewById(R.id.email);
         mPasswordField = findViewById(R.id.password);
         mSignInButton = findViewById(R.id.login);
         mSignUpButton = findViewById(R.id.register);
+
+        loginViewModel.start();
 
         // Click listeners
         mSignInButton.setOnClickListener(this);
@@ -57,9 +54,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onStart();
 
         // Check auth on Activity start
-        if (mAuth.getCurrentUser() != null) {
-            onAuthSuccess(mAuth.getCurrentUser());
+        if(loginViewModel.checkAuth()){
+            onAuthSuccess();
         }
+
     }
 
     private void signIn() {
@@ -72,23 +70,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
-                        hideProgressDialog();
+        OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
+                hideProgressDialog();
 
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
-                        } else {
-                            hideProgressDialog();
-                            Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
-                            Toast.makeText(LoginActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                if (task.isSuccessful()) {
+                    onAuthSuccess();
+                } else {
+                    hideProgressDialog();
+                    Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
+                    Toast.makeText(LoginActivity.this, "Sign In Failed",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        loginViewModel.signIn(email, password, listener);
+
     }
 
     private void signUp() {
@@ -101,48 +100,35 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
-                        hideProgressDialog();
+        OnCompleteListener<AuthResult> listener = new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
+                hideProgressDialog();
 
-                        if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Sign Up Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-        .addOnFailureListener(new OnFailureListener() {
+                if (task.isSuccessful()) {
+                    onAuthSuccess();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Sign Up Failed",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        OnFailureListener failureListener = new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.e(TAG, e.getMessage());
                 hideProgressDialog();
                 Toast.makeText(getBaseContext(), "Failed Creating User", Toast.LENGTH_LONG).show();
             }
-        });
+        };
+
+        loginViewModel.signUp(email, password, listener, failureListener);
     }
 
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-        String token = FirebaseInstanceId.getInstance().getToken();
-        // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail(), token);
-
-        // Go to CreateStoryActivity
+    private void onAuthSuccess() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
-    }
-
-    private String usernameFromEmail(String email) {
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
     }
 
     private boolean validateForm() {
@@ -150,26 +136,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {
             mEmailField.setError("Required");
             result = false;
-        } else {
-            mEmailField.setError(null);
         }
 
         if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
             mPasswordField.setError("Required");
             result = false;
-        } else {
-            mPasswordField.setError(null);
         }
 
         return result;
     }
 
-    // [START basic_write]
-    private void writeNewUser(String userId, String name, String email, String notificationToken) {
-        User user = new User(name, email, notificationToken);
-        mDatabase.child("users").child(userId).setValue(user);
-    }
-    // [END basic_write]
 
     @Override
     public void onClick(View v) {
