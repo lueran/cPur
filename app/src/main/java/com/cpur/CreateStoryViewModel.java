@@ -1,26 +1,18 @@
 package com.cpur;
 
 import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.OnLifecycleEvent;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ViewModel;
 
 import com.cpur.data.Paragraph;
 import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;
-import com.cpur.data.StoryDataSource;
 import com.cpur.data.StoryRepository;
-import com.cpur.data.source.local.StoryLocalDataSource;
-import com.cpur.db.AppDatabase;
-import com.cpur.utils.AppExecutors;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class CreateStoryViewModel extends ViewModel {

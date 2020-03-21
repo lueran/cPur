@@ -1,6 +1,6 @@
 package com.cpur.db;
 
-import android.arch.persistence.room.TypeConverter;
+import androidx.room.TypeConverter;
 import android.text.TextUtils;
 
 import com.cpur.data.Story;

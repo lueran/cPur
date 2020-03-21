@@ -1,8 +1,8 @@
 package com.cpur;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.cpur.data.Paragraph;
 import com.cpur.data.StoryAllParagraph;

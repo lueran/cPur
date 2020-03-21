@@ -1,7 +1,7 @@
 package com.cpur;
 
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.annotation.NonNull;
 
 import com.cpur.data.User;
 import com.google.android.gms.tasks.OnCompleteListener;

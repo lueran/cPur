@@ -2,12 +2,11 @@ package com.cpur.viewholder;
 
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.RequestManager;
 import com.cpur.R;
 import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;

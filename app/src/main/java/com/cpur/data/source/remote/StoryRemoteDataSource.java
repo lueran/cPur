@@ -1,12 +1,11 @@
 package com.cpur.data.source.remote;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.cpur.data.Paragraph;
 import com.cpur.data.Story;
 import com.cpur.data.StoryAllParagraph;
 import com.cpur.data.StoryDataSource;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class StoryRemoteDataSource implements StoryDataSource {
 

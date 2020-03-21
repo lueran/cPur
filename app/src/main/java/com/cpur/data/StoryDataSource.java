@@ -16,7 +16,7 @@
 
 package com.cpur.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 import com.google.firebase.auth.FirebaseAuth;

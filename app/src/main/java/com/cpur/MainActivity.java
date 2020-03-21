@@ -2,10 +2,17 @@ package com.cpur;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +20,7 @@ import android.view.View;
 import com.cpur.fragment.StoryListFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends BaseActivity {
         private static final String TAG = "MainActivity";
@@ -25,7 +33,19 @@ public class MainActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-           String notificationToken = FirebaseInstanceId.getInstance().getToken();
+           FirebaseInstanceId.getInstance().getInstanceId()
+                   .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                       @Override
+                       public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                           if (!task.isSuccessful()) {
+                               Log.w(TAG, "getInstanceId failed", task.getException());
+                               return;
+                           }
+
+                           // Get new Instance ID token
+                           String token = task.getResult().getToken();
+                       }
+                   });
 
             // Create the adapter that will return a fragment for each section
             mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
