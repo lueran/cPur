@@ -1,7 +1,13 @@
 message("Hello, this worked")
 
 changelog.check!
-#android_lint.lint
+lint_dir = "**/reports/lint-results.xml"
+Dir[lint_dir].each do |file_name|
+  android_lint.skip_gradle_task = true
+  android_lint.filtering = true
+  android_lint.report_file = file_name
+  android_lint.lint
+end
 apkstats.apk_filepath='app-debug.apk'
 apkstats.file_size #=> Fixnum
 apkstats.download_size #=> Fixnum
