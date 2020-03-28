@@ -6,3 +6,4 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gem 'danger'
 gem 'danger-changelog', '~> 0.6.0'
+gem 'danger-android_lint'
