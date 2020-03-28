@@ -75,7 +75,7 @@ public class StoryListFragment extends Fragment {
         mManager = new GridLayoutManager(getActivity(), 2);
         mRecycler.setLayoutManager(mManager);
 
-        mainViewModel.getStories(type).observe(this, (stories) -> mAdapter.setStories(stories));
+        mainViewModel.getStories(type).observe(getViewLifecycleOwner(), (stories) -> mAdapter.setStories(stories));
 
         mAdapter.setListener(story -> {
             Intent intent = new Intent(getActivity(), StoryActivity.class);

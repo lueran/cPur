@@ -23,9 +23,6 @@ public class Paragraph {
     private String body;
     private String storyId;
 
-    public Paragraph() {
-    }
-
     public Paragraph(String uid, String authorId, String body) {
         this.uid = uid;
         this.authorId = authorId;
