@@ -2,10 +2,6 @@ message("Hello, this worked")
 
 changelog.check!
 android_lint.lint
-apkanalyzer.apk_file = "app/build/outputs/apk/debug/app-debug.apk"
-apkanalyzer.file_size
-apkanalyzer.permissions
-apkanalyzer.method_references
 
 apkstats.apk_filepath='app-debug.apk'
 apkstats.file_size #=> Fixnum
