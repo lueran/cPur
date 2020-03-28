@@ -2,7 +2,7 @@ message("Hello, this worked")
 
 changelog.check!
 android_lint.lint
-android_lint.report_file = "app/build/reports/lint-results-debug.xml"
+android_lint.report_file = "file:///home/runner/work/cPur/cPur/app/build/reports/lint-results.xml"
 apkstats.apk_filepath='app-debug.apk'
 apkstats.file_size #=> Fixnum
 apkstats.download_size #=> Fixnum
