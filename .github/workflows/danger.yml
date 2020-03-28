@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Danger
-        uses: danger/danger
+        uses: "danger/danger"
         with:
           args: --failOnErrors --no-publish-check
         env:
